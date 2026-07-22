@@ -3,3 +3,20 @@
 chromaDB/
 *.sqlite3
 *.bin
+
+# Extracted course content and summaries
+courses/
+courses_md/
+summaries/
+summaries.zip
+
+# Python bytecode
+__pycache__/
+*.pyc
+anvil.yaml
+
+# Regenerable evaluation outputs (produced by evaluate/*.py)
+run_results/
+run_results_gte_jina/
+run_results_query_rewrites/
+run_results_sample30/

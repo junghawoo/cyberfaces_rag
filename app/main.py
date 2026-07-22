@@ -6,6 +6,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import JSONLoader
 from langchain_core.documents import Document
 from sentence_transformers import SentenceTransformer, CrossEncoder
+import torch
 import os
 import json
 from rank_bm25 import BM25Okapi
@@ -41,7 +42,9 @@ k_list = [5, 10, 20]
 keyword_threshold = 1.25 #1.00
 
 _ = load_dotenv(find_dotenv()) # read local .env file
-api_key  = os.environ['ANVILGPT_API']
+# Lazy: only the LLM endpoints (rewrite_query_with_llm / score_with_llm) need this.
+# Using .get() lets key-free paths (BM25 / vector / cross-encoder eval) run without it.
+api_key  = os.environ.get('ANVILGPT_API')
 
 
 RELOAD_SIGNAL = os.environ.get('DATA_FILE_PATH', './data.jsonl').replace('data.jsonl', '.reload') or os.environ.get('DATA_FILE2_PATH', './course_unit_map.jsonl')
@@ -352,7 +355,11 @@ def load_vectorDB_docs():
     
     #print(docs)
     
-    embeddings = HuggingFaceEmbeddings(model_name= "sentence-transformers/" + "all-mpnet-base-v2")
+    embeddings = HuggingFaceEmbeddings(
+        model_name="Alibaba-NLP/gte-large-en-v1.5",
+        model_kwargs={"trust_remote_code": True, "device": "cuda" if torch.cuda.is_available() else "cpu"},
+        encode_kwargs={"normalize_embeddings": True},
+    )
     
     # 3. Load documents into Chroma and embed them automatically
     def is_dir_empty(path):
@@ -651,6 +658,7 @@ def load_rerankers():
         dtype="auto",
         trust_remote_code=True
     )
+    rerank_model_advance.to("cuda") if torch.cuda.is_available() else rerank_model_advance.to("cpu")
     rerank_model_advance.eval()
 
     #print(f"Advanced rerank Device: {rerank_model_advance.model.device}")
