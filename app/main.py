@@ -27,6 +27,7 @@ import requests
 import logging
 import pandas as pd
 import copy
+import torch
 
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
@@ -651,6 +652,7 @@ def load_rerankers():
         dtype="auto",
         trust_remote_code=True
     )
+    rerank_model_advance.to("cuda") if torch.cuda.is_available() else rerank_model_advance.to("cpu")
     rerank_model_advance.eval()
 
     #print(f"Advanced rerank Device: {rerank_model_advance.model.device}")

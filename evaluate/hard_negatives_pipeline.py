@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 import time
@@ -8,12 +9,15 @@ from google import genai
 from google.genai import types
 from google.genai.errors import ServerError, ClientError
 
+from generate_ground_truth import parse_summary_md, SUMMARIES_DIR
+
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
 
-retriever_model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+retriever_model = SentenceTransformer("Alibaba-NLP/gte-large-en-v1.5", trust_remote_code=True, device="cpu")
+retriever_model.max_seq_length = 8192
 
 CHECKPOINT_PATH = "hard_negatives_checkpoint.jsonl"
 
@@ -80,15 +84,46 @@ def load_checkpoint():
     return done
 
 
-def build_hard_negatives_dataset(corpus_jsonl, synthetic_queries_jsonl, output_ground_truth_jsonl, top_k=10):
-    print("Loading corpus...")
-    corpus = []
-    with open(corpus_jsonl, "r") as f:
-        for line in f:
-            corpus.append(json.loads(line))
+def load_corpus(summaries_dir, corpus_jsonl_path):
+    """
+    Builds the retrieval corpus from unit_{id}__*.md summaries (title +
+    PDF/notebook-derived summary body), falling back to data.jsonl's short
+    description for the units that have no attachments to summarize. This
+    mirrors generate_ground_truth.py so the corpus lines up with the document
+    ids referenced in ground_truth_queries.jsonl.
+    """
+    with open(corpus_jsonl_path, "r") as f:
+        corpus_by_id = {doc["id"]: doc for doc in (json.loads(line) for line in f)}
 
-    print(f"Embedding {len(corpus)} documents with all-mpnet-base-v2...")
-    corpus_texts = [f"{doc.get('title', '')} {doc.get('description', '')}" for doc in corpus]
+    corpus = []
+    for path in sorted(glob.glob(os.path.join(summaries_dir, "unit_*.md"))):
+        frontmatter, body = parse_summary_md(path)
+        doc_id = frontmatter.get("unit_id")
+        if doc_id is None:
+            continue
+
+        corpus_doc = corpus_by_id.get(doc_id)
+        title = frontmatter.get("title") or (corpus_doc or {}).get("title")
+
+        description = body
+        if not description and corpus_doc:
+            description = corpus_doc.get("description") or ""
+
+        if not description:
+            continue
+
+        corpus.append({"id": doc_id, "title": title, "description": description})
+
+    return corpus
+
+
+def build_hard_negatives_dataset(corpus_summaries_dir, corpus_data_jsonl, synthetic_queries_jsonl, output_ground_truth_jsonl, top_k=10):
+    print("Loading corpus...")
+    corpus = load_corpus(corpus_summaries_dir, corpus_data_jsonl)
+    corpus_by_id = {doc["id"]: doc for doc in corpus}
+
+    print(f"Embedding {len(corpus)} documents with Alibaba-NLP/gte-large-en-v1.5...")
+    corpus_texts = [f"{doc['title']}\n\n{doc['description']}" for doc in corpus]
     corpus_embeddings = retriever_model.encode(corpus_texts, convert_to_tensor=True, show_progress_bar=True)
 
     print("Loading synthetic queries...")
@@ -121,7 +156,7 @@ def build_hard_negatives_dataset(corpus_jsonl, synthetic_queries_jsonl, output_g
             source_doc_id = item.get("document_id")
             if source_doc_id not in retrieved_ids:
                 if (query_text, str(source_doc_id)) not in done_pairs:
-                    source_doc = next((d for d in corpus if d["id"] == source_doc_id), None)
+                    source_doc = corpus_by_id.get(source_doc_id)
                     if source_doc:
                         row = {
                             "query": query_text,
@@ -170,8 +205,10 @@ def build_hard_negatives_dataset(corpus_jsonl, synthetic_queries_jsonl, output_g
     print(f"Done! Results saved to {output_ground_truth_jsonl}")
 
 
-build_hard_negatives_dataset(
-    corpus_jsonl="../data.jsonl",
-    synthetic_queries_jsonl="ground_truth_queries.jsonl",
-    output_ground_truth_jsonl="final_evaluation_dataset.jsonl",
-)
+if __name__ == "__main__":
+    build_hard_negatives_dataset(
+        corpus_summaries_dir=SUMMARIES_DIR,
+        corpus_data_jsonl="../data.jsonl",
+        synthetic_queries_jsonl="ground_truth_queries.jsonl",
+        output_ground_truth_jsonl="final_evaluation_dataset.jsonl",
+    )

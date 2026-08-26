@@ -1,0 +1,57 @@
+---
+title: "Introduction to Geostationary Satellites and Their Data Analysis & Interpretation Techniques"
+unit_id: 229
+course_id: 0
+level: "Foundation"
+slug: introduction-to-geostationary-satellites-and-their-data-analysis--interpretation-techniques
+objectives:
+  - "This course is designed for students and researchers who are eager to engage with the practical aspects of geostationary satellite data manipulation using Python. Through comprehensive, hands-on Jupyter notebooks, participants will gain fluency in the tools and techniques essential for the analysis and interpretation of data from specific satellites covered in the course materials."
+---
+
+# Introduction to Geostationary Satellites and Their Data Analysis & Interpretation Techniques
+
+Comprehensive course on geostationary satellite data analysis using Python, designed for weather and environmental studies. Prepared by Mohamed Abdelkader, Jorge Bravo, Marouane Temimi (Stevens Institute of Technology), and Jibin Joseph (Purdue University) under FAIR Science in Climate initiative.
+
+**Course Structure:** Three lectures with Jupyter notebooks and solution PDFs covering satellite data manipulation step-by-step. Focus on practical analysis and interpretation of data from Advanced Himawari Imager (AHI), Advanced Meteorological Imager (AMI), and Geostationary Operational Environmental Satellites (GOES). Code comments explain both execution and underlying principles.
+
+**Geostationary Satellites Overview:** Satellites orbit at Earth's rotational speed, remaining fixed over specific geographic regions for continuous atmospheric monitoring and space weather observation. Geostationary orbit characteristics maintain positions above Earth's specific regions. NASA satellite resources available for detailed information.
+
+**Advanced Himawari Imager (AHI):** Part of Himawari geostationary satellite series providing forecasting, numerical weather prediction accuracy, and environmental monitoring. Himawari-8 captures visible and infrared imagery of Asia-Pacific region. Critical for advanced warning during dangerous weather.
+
+**Advanced Meteorological Imager (AMI):** Integrated on GEO-Kompsat-2A (GK2A) satellite featuring higher radiometric, spectral, and spatial resolution than predecessor. Provides critical data for weather forecasting, climate monitoring, environmental observation.
+
+**GOES Satellites:** Geostationary Operational Environmental Satellites developed by NOAA and NASA (operational since 1975). Latest generation: GOES-R Series (first launch 2016), four-satellite program maintaining two operational, with third/fourth in storage mode. GOES-16 (East)/GOES-17 (West) former designations; GOES-18 (West, operational 137°W, 2023-present), GOES-19 (East, operational 75.2°W, 2025-present) current assignments. Real-time lightning mapping, solar monitoring, space weather observation; coverage exceeds half the globe.
+
+**GOES-R Series Instruments:** Earth-pointing: ABI (Advanced Baseline Imager, primary weather/oceans/environment imaging), GLM (Geostationary Lightning Mapper, near-infrared optical transient detection). Sun-pointing: EXIS (Extreme Ultraviolet/X-ray Irradiance Sensors with EUVS/XRS), SUVI (Solar Ultraviolet Imager detecting flares/eruptions), CCOR (Compact Coronagraph on GOES-19 detecting Coronal Mass Ejections). In-situ: Magnetometer (MAG/GMAG measuring magnetosphere magnetic field), SEISS (Space Environment In-Situ Suite with EHIS, MPS-HI/LO, SGPS monitoring particle fluxes).
+
+**Advanced Baseline Imager (ABI) Specifications:** Multi-channel passive imaging radiometer with 16 spectral bands (2 visible, 4 near-infrared, 10 infrared). Spatial resolution 0.5, 1, or 2 km depending on band. Full Disk coverage nearly hemisphere-wide (circular). CONUS/PACUS 3000x5000 km rectangular domains (Continental US or Pacific). Mesoscale 1000x1000 km rectangular movable regions. Mode 6 (default): full disk every 10 minutes, CONUS/PACUS every 5 minutes, mesoscale domains every 60 seconds. Mode 4 (contingency): full disk every 5 minutes. Mode 3 (previous default until April 2019): full disk every 15 minutes, CONUS every 5 minutes, mesoscale every 60 seconds.
+
+**GOES-R Data Products:** L0 (observation data, raw from instruments). L1b (calibrated, geographically-corrected radiances in standard physical units). L2+ (environmental quantities: cloud top height, land surface temperature, Cloud and Moisture Imagery/CMI using all 16 ABI bands). Product maturity: Beta (preliminary, minimally validated), Provisional (operations-ready, tested on subset), Full (operational, all anomalies documented).
+
+**Data Access Platforms:** NOAA CLASS (Comprehensive Large Array-data Stewardship System) official repository for all GOES-R products with L1b/L2+ data via FTPS/web. NCEI AIRS (Archive Information Request System) easier navigation, no account required. AWS S3 buckets free public access to ABI L1b/L2+, GLM L2, SUVI, SEISS, MAG, EXIS L1b via S3 Explorer interface, AWS Console, AWS CLI, rclone, Python s3fs library. Microsoft Planetary Computer Azure blob containers storing ABI CMI, L2+ derived products, GLM L2. Google Cloud buckets for GOES-16/17/18/19 with BigQuery indexing, BigQuery 1TB free monthly query allowance, $300 free trial credit (90 days).
+
+**Visualization Tools:** AWIPS (Advanced Weather Interactive Processing System, NWS standard) via CAVE (Common AWIPS Visualization Environment, Java, Linux/Mac/Windows) or EDEX-cloud server. GOES Image Viewer (ABI bands, composites, GLM, 20-hour archive). CIRA RAMMB Slider (7-day rolling archive). CSSP GeoSphere (2-week rolling, Geo2Grid processing). NASA Worldview (90-day rolling, Channels 2/13, Fire Temperature, composites). RealEarth (3-day rolling). NOAA SWPC (SUVI, CCOR near real-time). NASA SPoRT (1-day archive). SSEC Viewer (true color composite).
+
+**Geo2Grid Software:** Free open-source CSSP command-line tool (CIMSS/SSEC) for projected satellite images. Installation: conda create -c conda-forge -n geo2grid polar2grid (Anaconda/Miniconda) or pip install polar2grid. Commands: geo2grid -r abi_l1b -w geotiff (single-band GeoTIFFs), -p [product] for RGB composites (true_color, natural_color, air_mass, ash, dust, fog, night_microphysics). Remapping, geographic subsetting, PNG output supported.
+
+**Python Visualization:** Xarray (multidimensional arrays), Matplotlib (image generation with legends). Cartopy (georeference with geographic overlays, replacing deprecated Basemap). SatPy (PyTroll Team, reading/writing satellite imagery, specialized ABI readers abi_l1b/abi_l2_nc/glm_l2, composites, resampling, subsetting via pyresample). GOES-2-Go (Brian Blaylock PhD, AWS download/read, RGB recipes: True Color, Natural Color, Air Mass, Day Cloud Phase Distinction). goespy (Steven Pestana, Paulo Alexandre Mello, ABI_Downloader/GLM_Downloader simplification).
+
+**Google Earth Engine (GEE):** Cloud-based geospatial analysis. Two GOES-R L2+ products: MCMI (Multi-band Cloud and Moisture Imagery), FDC (Fire Detection and Characterization). Free noncommercial account (1-2 day approval). Advanced image processing, high-speed parallel processing, synthesizes dissimilar satellite products (MODIS, Landsat, Sentinel updated daily).
+
+**Data Processing Techniques:** Radiance-to-Reflectance conversion (reflective bands 1-6): reflectance ρ = kappa factor κ × radiance Lv. Brightness Temperature conversion (emissive bands 7-16, Kelvin units). Band stacking/RGB composites (true color uses bands 1,2,3; band 2 0.5km needs resampling to match band 1,3 1km resolution). NDVI (Normalized Difference Vegetation Index) using red/NIR bands.
+
+**GIS Processing:** NetCDF file conversion to GeoTIFFs using GDAL (gdal_translate NETCDF:"file.nc":Variable output.tif) or Geo2Grid. Raster models (rectangular pixel grids, TIFF/IMG/GRID/JPEG/JP2/BMP/GIF/PNG/BIL/BIP/BSQ/DAT formats via QGIS). Vector models (points/lines/polygons, shapefiles, GeoJSON, KML/KMZ, TIN, DXF). Discrete data to shapefile polygonization (Clear Sky Mask, Aerosol Detection, Cloud Top Phase, Data Quality Flags). Continuous data to contour to shapefile conversion.
+
+**Data Format Details:** NetCDF-4 format with attributes (title, Conventions, long_name, _FillValue, Valid_range, scale_factor, add_offset, units). Packed data compression (16-bit scaled integers): unpacked_value = packed_value × scale_factor + add_offset. Brightness temperature example band 8: (2305 × 0.04225) + 138.05 = 235.44K. Data quality masking via DQF layers. Georeferencing via GRS80 ellipsoid, fixed grid (E/W scanning angle, N/S elevation angle in radians), grid_mapping attributes. FITS format for SUVI Solar EUV Imagery; HDF for semi-static source files; Unix text format subset.
+
+**Troubleshooting/FAQ:** Data availability varies by cloud platform; NOAA CLASS provides complete archive. SSEC Monitoring Web Page checks data reception issues (GRB rebroadcast, PDA distribution). OSPO Satellite Alert Messages reports outages. Product User Guides Volumes 1-5, Algorithm Theoretical Basis Documents (ATBDs) available. Contact SPSD.UserServices@noaa.gov for questions.
+
+**Course Resources:** Fundamental remote sensing tutorials (Part 1). GOES-R Series data guide covering access methods (CLASS, AWS, Azure, Google Cloud), display tools (Geo2Grid, Python visualization, Earth Engine), GIS processing (NetCDF conversion, shapefile transformation). Comprehensive acronym list (ABI, GLM, EXIS, SUVI, CCOR, MAG, SEISS, AWIPS, AWS, GDAL, GEE, NetCDF, NDVI, QGIS, etc.). Scripts provided demonstrating data download, visualization, processing workflows with code annotations.
+
+## Summarized attachments
+
+- **Instructions** (`Instructions.pdf`, file): Comprehensive guide prepared by Mohamed Abdelkader, Jorge Bravo, Marouane Temimi, and Jibin Joseph providing practical introduction to geostationary satellite data manipulation using Python and Jupyter notebooks. Covers course structure with three lectures on Advanced Himawari Imager, Advanced Meteorological Imager, and GOES satellites, including detailed descriptions of geostationary orbit characteristics, satellite instruments, data products, and step-by-step guidance for satellite data analysis with code-annotated examples.
+
+- **Beginner's Guide to GOES-R Series Data** (https://www.goes-r.gov/downloads/resources/documents/Beginners_Guide_to_GOES-R_Series_Data.pdf, PDF): Comprehensive reference guide from NOAA and NASA covering acquisition, analysis, and visualization of GOES-R Series satellite data. Covers GOES-R Series instruments (ABI, GLM, EXIS, SUVI, CCOR, magnetometer, SEISS), data product levels (L0, L1b, L2+), data access platforms (NOAA CLASS, NCEI, AWS, Microsoft Azure, Google Cloud), visualization tools (AWIPS, Geo2Grid, Python packages), and GIS processing techniques including NetCDF to GeoTIFF conversion and vector/shapefile transformation methods.
+
+- **JN-File** (https://github.com/MAbdelkader94/Introduction-to-Geostationary-Satellites/blob/main/Lecture_01_AHI.ipynb, Jupyter notebook): Hands-on Jupyter notebook providing practical introduction to the SatPy Python library for reading, manipulating, and displaying satellite data from the Advanced Himawari Imager. Demonstrates downloading AHI data from AWS, loading satellite imagery using Scene objects, accessing satellite metadata attributes, and includes detailed code comments explaining both technical execution and underlying principles of satellite data processing techniques.
