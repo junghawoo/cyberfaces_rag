@@ -1,0 +1,109 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-exp1-full
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-exp1-full
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-exp1-full
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work/evaluate
+        command: ["sh", "-c"]
+        args:
+        - |
+          pip install --quiet pandas &&
+          gunzip -c /cmdata/final_evaluation_dataset.jsonl.gz > /work/evaluate/final_evaluation_dataset.jsonl &&
+          python compare_retrievers.py --methods bm25 vector rerank \
+            --candidate_pool 50 --k 10 \
+            --export_dir /work/evaluate/run_results_exp1_1035q
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DATA_FILE_PATH
+          value: "/work/data.jsonl"
+        - name: DATA_FILE2_PATH
+          value: "/work/course_unit_map.jsonl"
+        - name: CHROMADB_PATH
+          value: "/work/chromaDB"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        volumeMounts:
+        - name: hn-code
+          mountPath: /work/app/main.py
+          subPath: app_main.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_retrievers.py
+          subPath: compare_retrievers.py
+        - name: hn-code
+          mountPath: /work/evaluate/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: hn-data
+          mountPath: /work/data.jsonl
+          subPath: data.jsonl
+        - name: hn-data
+          mountPath: /work/course_unit_map.jsonl
+          subPath: course_unit_map.jsonl
+        - name: hn-data
+          mountPath: /cmdata/final_evaluation_dataset.jsonl.gz
+          subPath: final_evaluation_dataset.jsonl.gz
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "1"
+          limits:
+            memory: "10Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: hn-code
+        configMap:
+          name: cyberfaces-hn-code
+      - name: hn-data
+        configMap:
+          name: cyberfaces-hn-data
+---
+# Experiment 1, re-run at full scale on the SAME answer key as Experiments 6-9.
+#
+# The original Experiment 1 (docs_archive/retrieval_comparison_report.docx) ran
+# locally, on the 996-query set, and its reranker arm used a 30-query sample
+# because jina-reranker-v3 took 6-10 min/query on CPU. That makes it the one
+# experiment whose numbers cannot be laid beside any other. This Job removes
+# both limitations: all 1,035 queries, all three methods, on GPU.
+#
+# Reuses cyberfaces-hn-code / cyberfaces-hn-data unchanged -- see
+# bm25-expansion-job.yaml for their regeneration commands (and the note that
+# the ground truth in cyberfaces-hn-data is the 1,035-query set, not the 996).
+#
+# Built-in cross-check: Retrievers.bm25_search() and vector_search() both
+# ignore candidate_pool, so this Job's "BM25 (keyword)" and "Vector (MPNet)"
+# rows must land EXACTLY on hybrid-rerank-job.yaml's (Experiment 9) BM25-only
+# and Vector-only rows -- 0.4159/0.4212 and 0.5241/0.5594 NDCG@10 mean/median.
+# If they don't, something about the corpus or the answer key has moved.
+#
+# The genuinely new row is "Vector+Jina rerank" on the ORIGINAL (unpooled)
+# 1,035-query answer key at pool=50. Experiment 8 measured that method only on
+# the pooled key at pool=100 (0.5185); Experiment 9 measured reranking of the
+# BM25-union-vector pool at pool=24 (0.5065). Neither is this configuration.

@@ -1,0 +1,110 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-hn-pool
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-hn-pool
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-hn-pool
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work/evaluate
+        command: ["sh", "-c"]
+        args:
+        - |
+          pip install --quiet pandas &&
+          gunzip -c /cmdata/final_evaluation_dataset.jsonl.gz > /work/evaluate/final_evaluation_dataset.jsonl &&
+          python expand_ground_truth_pool.py &&
+          echo "=== POOLING DONE, RUNNING COMPARISON ===" &&
+          python compare_retrievers.py --ground_truth final_evaluation_dataset_pooled.jsonl \
+            --methods vector rerank --candidate_pool 100 --k 10 \
+            --export_dir /work/evaluate/run_results_pooled
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DATA_FILE_PATH
+          value: "/work/data.jsonl"
+        - name: DATA_FILE2_PATH
+          value: "/work/course_unit_map.jsonl"
+        - name: CHROMADB_PATH
+          value: "/work/chromaDB"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        volumeMounts:
+        - name: hn-code
+          mountPath: /work/app/main.py
+          subPath: app_main.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_retrievers.py
+          subPath: compare_retrievers.py
+        - name: hn-code
+          mountPath: /work/evaluate/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: hn-code
+          mountPath: /work/evaluate/expand_ground_truth_pool.py
+          subPath: expand_ground_truth_pool.py
+        - name: hn-data
+          mountPath: /work/data.jsonl
+          subPath: data.jsonl
+        - name: hn-data
+          mountPath: /work/course_unit_map.jsonl
+          subPath: course_unit_map.jsonl
+        - name: hn-data
+          mountPath: /cmdata/final_evaluation_dataset.jsonl.gz
+          subPath: final_evaluation_dataset.jsonl.gz
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "1"
+          limits:
+            memory: "10Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: hn-code
+        configMap:
+          name: cyberfaces-hn-code
+      - name: hn-data
+        configMap:
+          name: cyberfaces-hn-data
+---
+# IMPORTANT LESSON LEARNED (see conversation history): the pooling step writes
+# final_evaluation_dataset_pooled.jsonl to the container's local filesystem, which
+# is lost the moment the Job pod terminates -- kubectl cp / exec do not work on a
+# completed pod. That's why this manifest chains the comparison (compare_retrievers.py)
+# into the SAME command, so the numbers that matter survive in `kubectl logs`
+# regardless of what happens to the pod afterward. If you want the pooled ground
+# truth file itself as a reusable artifact, add a step here to copy it somewhere
+# persistent (e.g. an S3/object-storage upload) BEFORE the pod can terminate --
+# this was never done, so the actual 22,124-row file does not exist anywhere
+# outside of this Job's one run; only the printed comparison results survived.
+#
+# Reuses the same cyberfaces-hn-code / cyberfaces-hn-data ConfigMaps as
+# bm25-expansion-job.yaml -- see that file for the regeneration commands.
+#
+# Experiment 8: pools BM25- and reranker-sourced candidates into the ground
+# truth's judged set (fixing the original vector-only construction bias), grades
+# the ~11.7k net-new rows with AnvilGPT gemma4:26b-a4b, then re-compares vector
+# vs. vector+jina-rerank (pool=100) on the resulting 22,124-row set.

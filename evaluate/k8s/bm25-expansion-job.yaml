@@ -1,0 +1,126 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-bm25-expansion
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-bm25-expansion
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-bm25-expansion
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work/evaluate
+        command: ["sh", "-c"]
+        args:
+        - |
+          pip install --quiet pandas &&
+          gunzip -c /cmdata/final_evaluation_dataset.jsonl.gz > /work/evaluate/final_evaluation_dataset.jsonl &&
+          python compare_bm25_expansion.py
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DATA_FILE_PATH
+          value: "/work/data.jsonl"
+        - name: DATA_FILE2_PATH
+          value: "/work/course_unit_map.jsonl"
+        - name: CHROMADB_PATH
+          value: "/work/chromaDB"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        volumeMounts:
+        - name: hn-code
+          mountPath: /work/app/main.py
+          subPath: app_main.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_retrievers.py
+          subPath: compare_retrievers.py
+        - name: hn-code
+          mountPath: /work/evaluate/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_bm25_expansion.py
+          subPath: compare_bm25_expansion.py
+        - name: hn-data
+          mountPath: /work/data.jsonl
+          subPath: data.jsonl
+        - name: hn-data
+          mountPath: /work/course_unit_map.jsonl
+          subPath: course_unit_map.jsonl
+        - name: hn-data
+          mountPath: /cmdata/final_evaluation_dataset.jsonl.gz
+          subPath: final_evaluation_dataset.jsonl.gz
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "1"
+          limits:
+            memory: "10Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: hn-code
+        configMap:
+          name: cyberfaces-hn-code
+      - name: hn-data
+        configMap:
+          name: cyberfaces-hn-data
+---
+# Regenerate the shared cyberfaces-hn-code / cyberfaces-hn-data ConfigMaps (also
+# used by hn-pool-job.yaml and hybrid-rerank-job.yaml). app_main.py here is the
+# NEWER Desktop-repo app/main.py (gte-large-en-v1.5 embeddings, GPU-fixed reranker)
+# -- not the SmartSearch project's currently-deployed app/main.py.
+#
+#   kubectl --context=anvil create configmap cyberfaces-hn-code \
+#     --from-file=app_main.py=./app/main.py \
+#     --from-file=compare_retrievers.py=./evaluate/compare_retrievers.py \
+#     --from-file=calculate_ndcg.py=./evaluate/calculate_ndcg.py \
+#     --from-file=compare_bm25_expansion.py=./evaluate/compare_bm25_expansion.py \
+#     --from-file=expand_ground_truth_pool.py=./evaluate/expand_ground_truth_pool.py \
+#     --from-file=compare_hybrid_rerank.py=./evaluate/compare_hybrid_rerank.py \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+#   gzip -9 -c ./final_evaluation_dataset_1035q.jsonl > /tmp/gt.jsonl.gz   # the 1,035-query set
+#   kubectl --context=anvil create configmap cyberfaces-hn-data \
+#     --from-file=data.jsonl=./data.jsonl \
+#     --from-file=course_unit_map.jsonl=./course_unit_map.jsonl \
+#     --from-file=final_evaluation_dataset.jsonl.gz=/tmp/gt.jsonl.gz \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+# Experiment 7: AnvilGPT-expanded query vs. original query, scored by BM25 only,
+# against the 1,035-query graded ground truth.
+#
+# DATASET CORRECTION (verified against the "Cyberfaces Retrieval Experiments"
+# artifact): Experiments 7, 8 and 9 all ran on the 1,035-query set
+# (./final_evaluation_dataset_1035q.jsonl, 10,428 rows), NOT the 996-query
+# precursor in ./evaluate/. This comment block previously said 996, and
+# regenerating cyberfaces-hn-data from ./evaluate/final_evaluation_dataset.jsonl
+# silently swaps the answer key out from under all three experiments. Evidence:
+#   - the artifact labels Exps 7/8/9 "n = 1,035";
+#   - Exp 8's pooling is documented as 10,428 -> 22,124 graded rows, and 10,428
+#     is exactly the 1,035-query file's row count (the 996-query file has 10,024);
+#   - BM25-only NDCG@10 is 0.416 in Exps 7 and 9, vs 0.680 for the 996-query set
+#     in Exps 1 and 3.
+# Only Experiment 2 (gte-jina-job.yaml) genuinely uses the 996-query set --
+# its own comment block is correct, and 996 - 36 dropped = the 960 queries
+# that run reports.

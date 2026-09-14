@@ -1,0 +1,96 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-hybrid-rerank
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-hybrid-rerank
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-hybrid-rerank
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work/evaluate
+        command: ["sh", "-c"]
+        args:
+        - |
+          pip install --quiet pandas &&
+          gunzip -c /cmdata/final_evaluation_dataset.jsonl.gz > /work/evaluate/final_evaluation_dataset.jsonl &&
+          python compare_hybrid_rerank.py --candidate_pool 24
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DATA_FILE_PATH
+          value: "/work/data.jsonl"
+        - name: DATA_FILE2_PATH
+          value: "/work/course_unit_map.jsonl"
+        - name: CHROMADB_PATH
+          value: "/work/chromaDB"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        volumeMounts:
+        - name: hn-code
+          mountPath: /work/app/main.py
+          subPath: app_main.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_retrievers.py
+          subPath: compare_retrievers.py
+        - name: hn-code
+          mountPath: /work/evaluate/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_hybrid_rerank.py
+          subPath: compare_hybrid_rerank.py
+        - name: hn-data
+          mountPath: /work/data.jsonl
+          subPath: data.jsonl
+        - name: hn-data
+          mountPath: /work/course_unit_map.jsonl
+          subPath: course_unit_map.jsonl
+        - name: hn-data
+          mountPath: /cmdata/final_evaluation_dataset.jsonl.gz
+          subPath: final_evaluation_dataset.jsonl.gz
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "1"
+          limits:
+            memory: "10Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: hn-code
+        configMap:
+          name: cyberfaces-hn-code
+      - name: hn-data
+        configMap:
+          name: cyberfaces-hn-data
+---
+# Reuses the same cyberfaces-hn-code / cyberfaces-hn-data ConfigMaps as
+# bm25-expansion-job.yaml -- see that file for the regeneration commands.
+#
+# Experiment 9: BM25-top-24 UNION vector-top-24 (deduped, semantic-first, mirroring
+# production's combine_advance_reranking() exactly via a fake-request shim around
+# app.main's real get_courses()/get_courses_from_keywords()), then jina-reranked --
+# compared against BM25-only and vector-only on the same (original, 996-query)
+# ground truth.

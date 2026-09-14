@@ -13,7 +13,8 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
 
-retriever_model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+retriever_model = SentenceTransformer("Alibaba-NLP/gte-large-en-v1.5", trust_remote_code=True, device="cuda")
+retriever_model.max_seq_length = 8192
 
 CHECKPOINT_PATH = "hard_negatives_checkpoint.jsonl"
 

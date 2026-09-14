@@ -1,0 +1,68 @@
+loading embedder sentence-transformers/all-mpnet-base-v2 (trust_remote_code=False, device=cuda) ...
+336 docs, variant=summary, summary: 238 curated, 98 fall back to current text
+loading advanced reranker jinaai/jina-reranker-v3 ...
+A new version of the following files was downloaded from https://huggingface.co/jinaai/jina-reranker-v3:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+advanced reranker on device: cuda
+loading eval set /app/final_evaluation_dataset.jsonl.gz ...
+1035 unique queries
+  [20/1035] elapsed=25s rrf_mean=0.437 adv_mean=0.436 rrf_errors=0 adv_errors=0
+  [40/1035] elapsed=51s rrf_mean=0.440 adv_mean=0.417 rrf_errors=0 adv_errors=0
+  [60/1035] elapsed=76s rrf_mean=0.428 adv_mean=0.414 rrf_errors=0 adv_errors=0
+  [80/1035] elapsed=101s rrf_mean=0.417 adv_mean=0.423 rrf_errors=0 adv_errors=0
+  [100/1035] elapsed=125s rrf_mean=0.417 adv_mean=0.420 rrf_errors=0 adv_errors=0
+  [120/1035] elapsed=150s rrf_mean=0.410 adv_mean=0.393 rrf_errors=0 adv_errors=0
+  [140/1035] elapsed=177s rrf_mean=0.389 adv_mean=0.380 rrf_errors=0 adv_errors=0
+  [160/1035] elapsed=202s rrf_mean=0.359 adv_mean=0.357 rrf_errors=0 adv_errors=0
+  [180/1035] elapsed=227s rrf_mean=0.358 adv_mean=0.356 rrf_errors=0 adv_errors=0
+  [200/1035] elapsed=250s rrf_mean=0.355 adv_mean=0.352 rrf_errors=0 adv_errors=0
+  [220/1035] elapsed=276s rrf_mean=0.355 adv_mean=0.353 rrf_errors=0 adv_errors=0
+  [240/1035] elapsed=301s rrf_mean=0.368 adv_mean=0.363 rrf_errors=0 adv_errors=0
+  [260/1035] elapsed=325s rrf_mean=0.385 adv_mean=0.374 rrf_errors=0 adv_errors=0
+  [280/1035] elapsed=350s rrf_mean=0.390 adv_mean=0.381 rrf_errors=0 adv_errors=0
+  [300/1035] elapsed=375s rrf_mean=0.399 adv_mean=0.389 rrf_errors=0 adv_errors=0
+  [320/1035] elapsed=401s rrf_mean=0.405 adv_mean=0.399 rrf_errors=0 adv_errors=0
+  [340/1035] elapsed=424s rrf_mean=0.407 adv_mean=0.403 rrf_errors=0 adv_errors=0
+  [360/1035] elapsed=449s rrf_mean=0.402 adv_mean=0.401 rrf_errors=0 adv_errors=0
+  [380/1035] elapsed=475s rrf_mean=0.404 adv_mean=0.404 rrf_errors=0 adv_errors=0
+  [400/1035] elapsed=501s rrf_mean=0.410 adv_mean=0.403 rrf_errors=0 adv_errors=0
+  [420/1035] elapsed=528s rrf_mean=0.410 adv_mean=0.403 rrf_errors=0 adv_errors=0
+  [440/1035] elapsed=552s rrf_mean=0.408 adv_mean=0.410 rrf_errors=0 adv_errors=0
+  [460/1035] elapsed=579s rrf_mean=0.415 adv_mean=0.414 rrf_errors=0 adv_errors=0
+  [480/1035] elapsed=607s rrf_mean=0.421 adv_mean=0.421 rrf_errors=0 adv_errors=0
+  [500/1035] elapsed=633s rrf_mean=0.425 adv_mean=0.423 rrf_errors=0 adv_errors=0
+  [520/1035] elapsed=659s rrf_mean=0.430 adv_mean=0.428 rrf_errors=0 adv_errors=0
+  [540/1035] elapsed=684s rrf_mean=0.438 adv_mean=0.432 rrf_errors=0 adv_errors=0
+  [560/1035] elapsed=713s rrf_mean=0.445 adv_mean=0.437 rrf_errors=0 adv_errors=0
+  [580/1035] elapsed=741s rrf_mean=0.445 adv_mean=0.438 rrf_errors=0 adv_errors=0
+  [600/1035] elapsed=765s rrf_mean=0.447 adv_mean=0.440 rrf_errors=0 adv_errors=0
+  [620/1035] elapsed=794s rrf_mean=0.456 adv_mean=0.444 rrf_errors=0 adv_errors=0
+  [640/1035] elapsed=823s rrf_mean=0.459 adv_mean=0.448 rrf_errors=0 adv_errors=0
+  [660/1035] elapsed=850s rrf_mean=0.452 adv_mean=0.443 rrf_errors=0 adv_errors=0
+  [680/1035] elapsed=873s rrf_mean=0.446 adv_mean=0.437 rrf_errors=0 adv_errors=0
+  [700/1035] elapsed=902s rrf_mean=0.442 adv_mean=0.434 rrf_errors=0 adv_errors=0
+  [720/1035] elapsed=932s rrf_mean=0.436 adv_mean=0.428 rrf_errors=0 adv_errors=0
+  [740/1035] elapsed=960s rrf_mean=0.439 adv_mean=0.434 rrf_errors=0 adv_errors=0
+  [760/1035] elapsed=989s rrf_mean=0.439 adv_mean=0.436 rrf_errors=0 adv_errors=0
+  [780/1035] elapsed=1017s rrf_mean=0.437 adv_mean=0.433 rrf_errors=0 adv_errors=0
+  [800/1035] elapsed=1045s rrf_mean=0.429 adv_mean=0.426 rrf_errors=0 adv_errors=0
+  [820/1035] elapsed=1074s rrf_mean=0.425 adv_mean=0.423 rrf_errors=0 adv_errors=0
+  [840/1035] elapsed=1099s rrf_mean=0.428 adv_mean=0.423 rrf_errors=0 adv_errors=0
+  [860/1035] elapsed=1124s rrf_mean=0.432 adv_mean=0.427 rrf_errors=0 adv_errors=0
+  [880/1035] elapsed=1154s rrf_mean=0.432 adv_mean=0.427 rrf_errors=0 adv_errors=0
+  [900/1035] elapsed=1181s rrf_mean=0.429 adv_mean=0.426 rrf_errors=0 adv_errors=0
+  [920/1035] elapsed=1207s rrf_mean=0.430 adv_mean=0.428 rrf_errors=0 adv_errors=0
+  [940/1035] elapsed=1233s rrf_mean=0.431 adv_mean=0.429 rrf_errors=0 adv_errors=0
+  [960/1035] elapsed=1259s rrf_mean=0.431 adv_mean=0.431 rrf_errors=0 adv_errors=0
+  [980/1035] elapsed=1284s rrf_mean=0.433 adv_mean=0.434 rrf_errors=0 adv_errors=0
+  [1000/1035] elapsed=1307s rrf_mean=0.436 adv_mean=0.436 rrf_errors=0 adv_errors=0
+  [1020/1035] elapsed=1333s rrf_mean=0.439 adv_mean=0.442 rrf_errors=0 adv_errors=0
+  [1035/1035] elapsed=1352s rrf_mean=0.441 adv_mean=0.445 rrf_errors=0 adv_errors=0
+
+======================================================================
+method                  n_scored  n_excluded  n_errors    NDCG@10 mean/median
+----------------------------------------------------------------------
+RRF (summary)                995          40         0 0.441 / 0.463
+CrossEncoder_advance (summary)       995          40         0 0.445 / 0.457
+wrote ndcg_results_summary.json

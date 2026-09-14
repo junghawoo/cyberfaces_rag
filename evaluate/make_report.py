@@ -2,6 +2,7 @@
 Generate a Word (.docx) summary of the retrieval-method comparison experiment.
 
     python evaluate/make_report.py            # writes evaluate/retrieval_comparison_report.docx
+    # note: the published copy of this report now lives in docs_archive/
 """
 import os
 from docx import Document

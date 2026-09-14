@@ -1,0 +1,165 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-exp3-rewrites
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-exp3-rewrites
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-exp3-rewrites
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work/evaluate
+        command: ["sh", "-c"]
+        args:
+        - |
+          pip install --quiet pandas openpyxl &&
+          gunzip -c /cmdata/gt996.jsonl.gz > /work/evaluate/final_evaluation_dataset.jsonl &&
+          tar xzf /cmdata/summaries.tar.gz -C /work &&
+          cp /cmdata/query_comparison.xlsx /work/query_comparison.xlsx &&
+          echo "=== PLAIN CORPUS (BM25 + MPNet vector), old vs new query ===" &&
+          python compare_query_rewrites.py &&
+          echo "=== SUMMARIES CORPUS (BM25 + gte-large), old vs new query ===" &&
+          python compare_rewrites_summaries.py
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: DATA_FILE_PATH
+          value: "/work/data.jsonl"
+        - name: DATA_FILE2_PATH
+          value: "/work/course_unit_map.jsonl"
+        - name: CHROMADB_PATH
+          value: "/work/chromaDB"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-hf-token
+              key: token
+        - name: HUGGING_FACE_HUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-hf-token
+              key: token
+        volumeMounts:
+        - name: hn-code
+          mountPath: /work/app/main.py
+          subPath: app_main.py
+        - name: hn-code
+          mountPath: /work/evaluate/compare_retrievers.py
+          subPath: compare_retrievers.py
+        - name: hn-code
+          mountPath: /work/evaluate/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: exp3-code
+          mountPath: /work/evaluate/compare_query_rewrites.py
+          subPath: compare_query_rewrites.py
+        - name: exp3-code
+          mountPath: /work/evaluate/compare_rewrites_summaries.py
+          subPath: compare_rewrites_summaries.py
+        - name: hn-data
+          mountPath: /work/data.jsonl
+          subPath: data.jsonl
+        - name: hn-data
+          mountPath: /work/course_unit_map.jsonl
+          subPath: course_unit_map.jsonl
+        - name: exp3-data
+          mountPath: /cmdata/summaries.tar.gz
+          subPath: summaries.tar.gz
+        - name: exp3-data
+          mountPath: /cmdata/query_comparison.xlsx
+          subPath: query_comparison.xlsx
+        - name: exp3-data
+          mountPath: /cmdata/gt996.jsonl.gz
+          subPath: gt996.jsonl.gz
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "1"
+          limits:
+            memory: "14Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: hn-code
+        configMap:
+          name: cyberfaces-hn-code
+      - name: exp3-code
+        configMap:
+          name: cyberfaces-exp3-code
+      - name: hn-data
+        configMap:
+          name: cyberfaces-hn-data
+      - name: exp3-data
+        configMap:
+          name: cyberfaces-exp3-data
+---
+# Experiment 3 (query rewriting), re-run on GPU at full scale.
+#
+# IMPORTANT -- this Job deliberately uses the 996-query set, NOT the 1,035-query
+# set Experiments 6-9 use, because Experiment 3 CANNOT be moved to that key:
+#
+#   query_comparison.xlsx supplies the old_query -> new_query mapping, and both
+#   scripts evaluate only queries present in BOTH the answer key and that
+#   mapping. Coverage measured 2026-09-09:
+#       996-query set   : 996 / 996   queries have a rewrite
+#       1,035-query set :  17 / 1,035 queries have a rewrite
+#   Re-running on the 1,035-query key would score 17 queries. The rewrites were
+#   authored against the 996-query set and do not exist for the other 1,018.
+#
+# The underlying reason is that the two answer keys are NOT nested. Their query
+# strings are almost disjoint -- only 17 strings in common, 979 unique to the
+# 996-query set and 1,018 unique to the 1,035-query set (docs 336/max-id-342 vs
+# 346/max-id-367). They are two independently generated query sets, not one set
+# grown over time, so no experiment's numbers transfer between them.
+#
+# Experiment 3 was also never a sample: the documented run already covered all
+# 996 queries (979 for the summaries-corpus row, which drops queries whose
+# judged docs are absent from summaries/). So the only thing this re-run adds is
+# verification on GPU with the current scripts -- worth doing because the
+# neighbouring Experiment 2 turned out to have a scoring-convention defect in
+# this same 996-query family (see gte-baseline-job.yaml).
+#
+# Regenerate the two ConfigMaps this Job adds (run from the repo root):
+#
+#   kubectl --context=anvil create configmap cyberfaces-exp3-code \
+#     --from-file=compare_query_rewrites.py=./evaluate/compare_query_rewrites.py \
+#     --from-file=compare_rewrites_summaries.py=./evaluate/compare_rewrites_summaries.py \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+#   tar czf /tmp/summaries.tar.gz summaries          # the 346-file unit_N__slug.md corpus
+#   gzip -9 -c ./evaluate/final_evaluation_dataset.jsonl > /tmp/gt996.jsonl.gz
+#   kubectl --context=anvil delete configmap cyberfaces-exp3-data -n cyberfaces-dev --ignore-not-found
+#   kubectl --context=anvil create configmap cyberfaces-exp3-data \
+#     --from-file=summaries.tar.gz=/tmp/summaries.tar.gz \
+#     --from-file=query_comparison.xlsx=./query_comparison.xlsx \
+#     --from-file=gt996.jsonl.gz=/tmp/gt996.jsonl.gz \
+#     -n cyberfaces-dev
+#   # plain `create`, not `apply`: the binary payload exceeds apply's
+#   # last-applied-configuration annotation cap (256KiB).
+#
+# summaries/ here is the 346-file corpus (unit_N__slug.md) that
+# compare_rewrites_summaries.py globs -- NOT curated_summaries_35q/, which is
+# what flatten_ab_eval.py uses. See flatten-ab-job.yaml's note.

@@ -1,0 +1,599 @@
+loading embedder sentence-transformers/all-mpnet-base-v2 ...
+336 docs, 35 eval queries
+building indices (current + flat + labeled + summary) ...
+  summary: 238 curated .md files, 98/336 docs fall back to current text
+loading base cross-encoder cross-encoder/ms-marco-MiniLM-L-6-v2 ...
+loading advanced reranker jinaai/jina-reranker-v3 ...
+A new version of the following files was downloaded from https://huggingface.co/jinaai/jina-reranker-v3:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+advanced reranker on device: cuda
+  [RRF/current] query 1/35
+  [RRF/current] query 2/35
+  [RRF/current] query 3/35
+  [RRF/current] query 4/35
+  [RRF/current] query 5/35
+  [RRF/current] query 6/35
+  [RRF/current] query 7/35
+  [RRF/current] query 8/35
+  [RRF/current] query 9/35
+  [RRF/current] query 10/35
+  [RRF/current] query 11/35
+  [RRF/current] query 12/35
+  [RRF/current] query 13/35
+  [RRF/current] query 14/35
+  [RRF/current] query 15/35
+  [RRF/current] query 16/35
+  [RRF/current] query 17/35
+  [RRF/current] query 18/35
+  [RRF/current] query 19/35
+  [RRF/current] query 20/35
+  [RRF/current] query 21/35
+  [RRF/current] query 22/35
+  [RRF/current] query 23/35
+  [RRF/current] query 24/35
+  [RRF/current] query 25/35
+  [RRF/current] query 26/35
+  [RRF/current] query 27/35
+  [RRF/current] query 28/35
+  [RRF/current] query 29/35
+  [RRF/current] query 30/35
+  [RRF/current] query 31/35
+  [RRF/current] query 32/35
+  [RRF/current] query 33/35
+  [RRF/current] query 34/35
+  [RRF/current] query 35/35
+  [RRF/flat] query 1/35
+  [RRF/flat] query 2/35
+  [RRF/flat] query 3/35
+  [RRF/flat] query 4/35
+  [RRF/flat] query 5/35
+  [RRF/flat] query 6/35
+  [RRF/flat] query 7/35
+  [RRF/flat] query 8/35
+  [RRF/flat] query 9/35
+  [RRF/flat] query 10/35
+  [RRF/flat] query 11/35
+  [RRF/flat] query 12/35
+  [RRF/flat] query 13/35
+  [RRF/flat] query 14/35
+  [RRF/flat] query 15/35
+  [RRF/flat] query 16/35
+  [RRF/flat] query 17/35
+  [RRF/flat] query 18/35
+  [RRF/flat] query 19/35
+  [RRF/flat] query 20/35
+  [RRF/flat] query 21/35
+  [RRF/flat] query 22/35
+  [RRF/flat] query 23/35
+  [RRF/flat] query 24/35
+  [RRF/flat] query 25/35
+  [RRF/flat] query 26/35
+  [RRF/flat] query 27/35
+  [RRF/flat] query 28/35
+  [RRF/flat] query 29/35
+  [RRF/flat] query 30/35
+  [RRF/flat] query 31/35
+  [RRF/flat] query 32/35
+  [RRF/flat] query 33/35
+  [RRF/flat] query 34/35
+  [RRF/flat] query 35/35
+  [RRF/labeled] query 1/35
+  [RRF/labeled] query 2/35
+  [RRF/labeled] query 3/35
+  [RRF/labeled] query 4/35
+  [RRF/labeled] query 5/35
+  [RRF/labeled] query 6/35
+  [RRF/labeled] query 7/35
+  [RRF/labeled] query 8/35
+  [RRF/labeled] query 9/35
+  [RRF/labeled] query 10/35
+  [RRF/labeled] query 11/35
+  [RRF/labeled] query 12/35
+  [RRF/labeled] query 13/35
+  [RRF/labeled] query 14/35
+  [RRF/labeled] query 15/35
+  [RRF/labeled] query 16/35
+  [RRF/labeled] query 17/35
+  [RRF/labeled] query 18/35
+  [RRF/labeled] query 19/35
+  [RRF/labeled] query 20/35
+  [RRF/labeled] query 21/35
+  [RRF/labeled] query 22/35
+  [RRF/labeled] query 23/35
+  [RRF/labeled] query 24/35
+  [RRF/labeled] query 25/35
+  [RRF/labeled] query 26/35
+  [RRF/labeled] query 27/35
+  [RRF/labeled] query 28/35
+  [RRF/labeled] query 29/35
+  [RRF/labeled] query 30/35
+  [RRF/labeled] query 31/35
+  [RRF/labeled] query 32/35
+  [RRF/labeled] query 33/35
+  [RRF/labeled] query 34/35
+  [RRF/labeled] query 35/35
+  [RRF/summary] query 1/35
+  [RRF/summary] query 2/35
+  [RRF/summary] query 3/35
+  [RRF/summary] query 4/35
+  [RRF/summary] query 5/35
+  [RRF/summary] query 6/35
+  [RRF/summary] query 7/35
+  [RRF/summary] query 8/35
+  [RRF/summary] query 9/35
+  [RRF/summary] query 10/35
+  [RRF/summary] query 11/35
+  [RRF/summary] query 12/35
+  [RRF/summary] query 13/35
+  [RRF/summary] query 14/35
+  [RRF/summary] query 15/35
+  [RRF/summary] query 16/35
+  [RRF/summary] query 17/35
+  [RRF/summary] query 18/35
+  [RRF/summary] query 19/35
+  [RRF/summary] query 20/35
+  [RRF/summary] query 21/35
+  [RRF/summary] query 22/35
+  [RRF/summary] query 23/35
+  [RRF/summary] query 24/35
+  [RRF/summary] query 25/35
+  [RRF/summary] query 26/35
+  [RRF/summary] query 27/35
+  [RRF/summary] query 28/35
+  [RRF/summary] query 29/35
+  [RRF/summary] query 30/35
+  [RRF/summary] query 31/35
+  [RRF/summary] query 32/35
+  [RRF/summary] query 33/35
+  [RRF/summary] query 34/35
+  [RRF/summary] query 35/35
+  [CrossEncoder_base/current] query 1/35
+  [CrossEncoder_base/current] query 2/35
+  [CrossEncoder_base/current] query 3/35
+  [CrossEncoder_base/current] query 4/35
+  [CrossEncoder_base/current] query 5/35
+  [CrossEncoder_base/current] query 6/35
+  [CrossEncoder_base/current] query 7/35
+  [CrossEncoder_base/current] query 8/35
+  [CrossEncoder_base/current] query 9/35
+  [CrossEncoder_base/current] query 10/35
+  [CrossEncoder_base/current] query 11/35
+  [CrossEncoder_base/current] query 12/35
+  [CrossEncoder_base/current] query 13/35
+  [CrossEncoder_base/current] query 14/35
+  [CrossEncoder_base/current] query 15/35
+  [CrossEncoder_base/current] query 16/35
+  [CrossEncoder_base/current] query 17/35
+  [CrossEncoder_base/current] query 18/35
+  [CrossEncoder_base/current] query 19/35
+  [CrossEncoder_base/current] query 20/35
+  [CrossEncoder_base/current] query 21/35
+  [CrossEncoder_base/current] query 22/35
+  [CrossEncoder_base/current] query 23/35
+  [CrossEncoder_base/current] query 24/35
+  [CrossEncoder_base/current] query 25/35
+  [CrossEncoder_base/current] query 26/35
+  [CrossEncoder_base/current] query 27/35
+  [CrossEncoder_base/current] query 28/35
+  [CrossEncoder_base/current] query 29/35
+  [CrossEncoder_base/current] query 30/35
+  [CrossEncoder_base/current] query 31/35
+  [CrossEncoder_base/current] query 32/35
+  [CrossEncoder_base/current] query 33/35
+  [CrossEncoder_base/current] query 34/35
+  [CrossEncoder_base/current] query 35/35
+  [CrossEncoder_base/flat] query 1/35
+  [CrossEncoder_base/flat] query 2/35
+  [CrossEncoder_base/flat] query 3/35
+  [CrossEncoder_base/flat] query 4/35
+  [CrossEncoder_base/flat] query 5/35
+  [CrossEncoder_base/flat] query 6/35
+  [CrossEncoder_base/flat] query 7/35
+  [CrossEncoder_base/flat] query 8/35
+  [CrossEncoder_base/flat] query 9/35
+  [CrossEncoder_base/flat] query 10/35
+  [CrossEncoder_base/flat] query 11/35
+  [CrossEncoder_base/flat] query 12/35
+  [CrossEncoder_base/flat] query 13/35
+  [CrossEncoder_base/flat] query 14/35
+  [CrossEncoder_base/flat] query 15/35
+  [CrossEncoder_base/flat] query 16/35
+  [CrossEncoder_base/flat] query 17/35
+  [CrossEncoder_base/flat] query 18/35
+  [CrossEncoder_base/flat] query 19/35
+  [CrossEncoder_base/flat] query 20/35
+  [CrossEncoder_base/flat] query 21/35
+  [CrossEncoder_base/flat] query 22/35
+  [CrossEncoder_base/flat] query 23/35
+  [CrossEncoder_base/flat] query 24/35
+  [CrossEncoder_base/flat] query 25/35
+  [CrossEncoder_base/flat] query 26/35
+  [CrossEncoder_base/flat] query 27/35
+  [CrossEncoder_base/flat] query 28/35
+  [CrossEncoder_base/flat] query 29/35
+  [CrossEncoder_base/flat] query 30/35
+  [CrossEncoder_base/flat] query 31/35
+  [CrossEncoder_base/flat] query 32/35
+  [CrossEncoder_base/flat] query 33/35
+  [CrossEncoder_base/flat] query 34/35
+  [CrossEncoder_base/flat] query 35/35
+  [CrossEncoder_base/labeled] query 1/35
+  [CrossEncoder_base/labeled] query 2/35
+  [CrossEncoder_base/labeled] query 3/35
+  [CrossEncoder_base/labeled] query 4/35
+  [CrossEncoder_base/labeled] query 5/35
+  [CrossEncoder_base/labeled] query 6/35
+  [CrossEncoder_base/labeled] query 7/35
+  [CrossEncoder_base/labeled] query 8/35
+  [CrossEncoder_base/labeled] query 9/35
+  [CrossEncoder_base/labeled] query 10/35
+  [CrossEncoder_base/labeled] query 11/35
+  [CrossEncoder_base/labeled] query 12/35
+  [CrossEncoder_base/labeled] query 13/35
+  [CrossEncoder_base/labeled] query 14/35
+  [CrossEncoder_base/labeled] query 15/35
+  [CrossEncoder_base/labeled] query 16/35
+  [CrossEncoder_base/labeled] query 17/35
+  [CrossEncoder_base/labeled] query 18/35
+  [CrossEncoder_base/labeled] query 19/35
+  [CrossEncoder_base/labeled] query 20/35
+  [CrossEncoder_base/labeled] query 21/35
+  [CrossEncoder_base/labeled] query 22/35
+  [CrossEncoder_base/labeled] query 23/35
+  [CrossEncoder_base/labeled] query 24/35
+  [CrossEncoder_base/labeled] query 25/35
+  [CrossEncoder_base/labeled] query 26/35
+  [CrossEncoder_base/labeled] query 27/35
+  [CrossEncoder_base/labeled] query 28/35
+  [CrossEncoder_base/labeled] query 29/35
+  [CrossEncoder_base/labeled] query 30/35
+  [CrossEncoder_base/labeled] query 31/35
+  [CrossEncoder_base/labeled] query 32/35
+  [CrossEncoder_base/labeled] query 33/35
+  [CrossEncoder_base/labeled] query 34/35
+  [CrossEncoder_base/labeled] query 35/35
+  [CrossEncoder_base/summary] query 1/35
+  [CrossEncoder_base/summary] query 2/35
+  [CrossEncoder_base/summary] query 3/35
+  [CrossEncoder_base/summary] query 4/35
+  [CrossEncoder_base/summary] query 5/35
+  [CrossEncoder_base/summary] query 6/35
+  [CrossEncoder_base/summary] query 7/35
+  [CrossEncoder_base/summary] query 8/35
+  [CrossEncoder_base/summary] query 9/35
+  [CrossEncoder_base/summary] query 10/35
+  [CrossEncoder_base/summary] query 11/35
+  [CrossEncoder_base/summary] query 12/35
+  [CrossEncoder_base/summary] query 13/35
+  [CrossEncoder_base/summary] query 14/35
+  [CrossEncoder_base/summary] query 15/35
+  [CrossEncoder_base/summary] query 16/35
+  [CrossEncoder_base/summary] query 17/35
+  [CrossEncoder_base/summary] query 18/35
+  [CrossEncoder_base/summary] query 19/35
+  [CrossEncoder_base/summary] query 20/35
+  [CrossEncoder_base/summary] query 21/35
+  [CrossEncoder_base/summary] query 22/35
+  [CrossEncoder_base/summary] query 23/35
+  [CrossEncoder_base/summary] query 24/35
+  [CrossEncoder_base/summary] query 25/35
+  [CrossEncoder_base/summary] query 26/35
+  [CrossEncoder_base/summary] query 27/35
+  [CrossEncoder_base/summary] query 28/35
+  [CrossEncoder_base/summary] query 29/35
+  [CrossEncoder_base/summary] query 30/35
+  [CrossEncoder_base/summary] query 31/35
+  [CrossEncoder_base/summary] query 32/35
+  [CrossEncoder_base/summary] query 33/35
+  [CrossEncoder_base/summary] query 34/35
+  [CrossEncoder_base/summary] query 35/35
+  [CrossEncoder_advance/current] query 1/35
+    timing: llm_rewrite=1.09s pool=0.01s jina_rerank=1.33s pool_size=37
+  [CrossEncoder_advance/current] query 2/35
+    timing: llm_rewrite=0.89s pool=0.01s jina_rerank=0.27s pool_size=45
+  [CrossEncoder_advance/current] query 3/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.18s pool_size=37
+  [CrossEncoder_advance/current] query 4/35
+    timing: llm_rewrite=1.12s pool=0.01s jina_rerank=0.36s pool_size=36
+  [CrossEncoder_advance/current] query 5/35
+    timing: llm_rewrite=0.97s pool=0.01s jina_rerank=0.37s pool_size=39
+  [CrossEncoder_advance/current] query 6/35
+    timing: llm_rewrite=1.41s pool=0.01s jina_rerank=0.16s pool_size=36
+  [CrossEncoder_advance/current] query 7/35
+    timing: llm_rewrite=1.24s pool=0.01s jina_rerank=0.09s pool_size=26
+  [CrossEncoder_advance/current] query 8/35
+    timing: llm_rewrite=1.15s pool=0.01s jina_rerank=0.13s pool_size=39
+  [CrossEncoder_advance/current] query 9/35
+    timing: llm_rewrite=0.92s pool=0.01s jina_rerank=0.11s pool_size=32
+  [CrossEncoder_advance/current] query 10/35
+    timing: llm_rewrite=1.82s pool=0.01s jina_rerank=0.10s pool_size=46
+  [CrossEncoder_advance/current] query 11/35
+    timing: llm_rewrite=0.95s pool=0.01s jina_rerank=0.06s pool_size=45
+  [CrossEncoder_advance/current] query 12/35
+    timing: llm_rewrite=1.03s pool=0.01s jina_rerank=0.21s pool_size=38
+  [CrossEncoder_advance/current] query 13/35
+    timing: llm_rewrite=0.94s pool=0.01s jina_rerank=0.23s pool_size=36
+  [CrossEncoder_advance/current] query 14/35
+    timing: llm_rewrite=0.97s pool=0.01s jina_rerank=0.17s pool_size=39
+  [CrossEncoder_advance/current] query 15/35
+    timing: llm_rewrite=1.04s pool=0.01s jina_rerank=0.12s pool_size=42
+  [CrossEncoder_advance/current] query 16/35
+    timing: llm_rewrite=0.75s pool=0.01s jina_rerank=0.38s pool_size=32
+  [CrossEncoder_advance/current] query 17/35
+    timing: llm_rewrite=0.96s pool=0.01s jina_rerank=0.14s pool_size=43
+  [CrossEncoder_advance/current] query 18/35
+    timing: llm_rewrite=1.17s pool=0.01s jina_rerank=0.48s pool_size=38
+  [CrossEncoder_advance/current] query 19/35
+    timing: llm_rewrite=1.03s pool=0.01s jina_rerank=0.16s pool_size=39
+  [CrossEncoder_advance/current] query 20/35
+    timing: llm_rewrite=0.97s pool=0.01s jina_rerank=0.43s pool_size=39
+  [CrossEncoder_advance/current] query 21/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.16s pool_size=36
+  [CrossEncoder_advance/current] query 22/35
+    timing: llm_rewrite=0.98s pool=0.01s jina_rerank=0.26s pool_size=41
+  [CrossEncoder_advance/current] query 23/35
+    timing: llm_rewrite=0.97s pool=0.01s jina_rerank=0.09s pool_size=38
+  [CrossEncoder_advance/current] query 24/35
+    timing: llm_rewrite=1.04s pool=0.01s jina_rerank=0.30s pool_size=41
+  [CrossEncoder_advance/current] query 25/35
+    timing: llm_rewrite=0.82s pool=0.01s jina_rerank=0.39s pool_size=39
+  [CrossEncoder_advance/current] query 26/35
+    timing: llm_rewrite=0.93s pool=0.01s jina_rerank=0.21s pool_size=43
+  [CrossEncoder_advance/current] query 27/35
+    timing: llm_rewrite=1.19s pool=0.01s jina_rerank=0.11s pool_size=31
+  [CrossEncoder_advance/current] query 28/35
+    timing: llm_rewrite=1.03s pool=0.01s jina_rerank=0.17s pool_size=40
+  [CrossEncoder_advance/current] query 29/35
+    timing: llm_rewrite=1.15s pool=0.01s jina_rerank=0.20s pool_size=44
+  [CrossEncoder_advance/current] query 30/35
+    timing: llm_rewrite=0.96s pool=0.01s jina_rerank=0.16s pool_size=44
+  [CrossEncoder_advance/current] query 31/35
+    timing: llm_rewrite=1.07s pool=0.01s jina_rerank=0.16s pool_size=35
+  [CrossEncoder_advance/current] query 32/35
+    timing: llm_rewrite=1.13s pool=0.01s jina_rerank=0.09s pool_size=39
+  [CrossEncoder_advance/current] query 33/35
+    timing: llm_rewrite=0.83s pool=0.01s jina_rerank=0.17s pool_size=45
+  [CrossEncoder_advance/current] query 34/35
+    timing: llm_rewrite=1.33s pool=0.01s jina_rerank=0.09s pool_size=44
+  [CrossEncoder_advance/current] query 35/35
+    timing: llm_rewrite=0.79s pool=0.01s jina_rerank=0.30s pool_size=40
+  [CrossEncoder_advance/flat] query 1/35
+    timing: llm_rewrite=0.66s pool=0.01s jina_rerank=0.07s pool_size=36
+  [CrossEncoder_advance/flat] query 2/35
+    timing: llm_rewrite=0.90s pool=0.01s jina_rerank=0.26s pool_size=45
+  [CrossEncoder_advance/flat] query 3/35
+    timing: llm_rewrite=0.94s pool=0.01s jina_rerank=0.19s pool_size=35
+  [CrossEncoder_advance/flat] query 4/35
+    timing: llm_rewrite=0.91s pool=0.01s jina_rerank=0.37s pool_size=36
+  [CrossEncoder_advance/flat] query 5/35
+    timing: llm_rewrite=0.96s pool=0.01s jina_rerank=0.37s pool_size=40
+  [CrossEncoder_advance/flat] query 6/35
+    timing: llm_rewrite=1.11s pool=0.01s jina_rerank=0.14s pool_size=35
+  [CrossEncoder_advance/flat] query 7/35
+    timing: llm_rewrite=0.87s pool=0.01s jina_rerank=0.08s pool_size=26
+  [CrossEncoder_advance/flat] query 8/35
+    timing: llm_rewrite=0.97s pool=0.01s jina_rerank=0.10s pool_size=39
+  [CrossEncoder_advance/flat] query 9/35
+    timing: llm_rewrite=1.00s pool=0.01s jina_rerank=0.10s pool_size=31
+  [CrossEncoder_advance/flat] query 10/35
+    timing: llm_rewrite=1.47s pool=0.01s jina_rerank=0.10s pool_size=45
+  [CrossEncoder_advance/flat] query 11/35
+    timing: llm_rewrite=1.00s pool=0.01s jina_rerank=0.06s pool_size=45
+  [CrossEncoder_advance/flat] query 12/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.20s pool_size=40
+  [CrossEncoder_advance/flat] query 13/35
+    timing: llm_rewrite=1.13s pool=0.01s jina_rerank=0.22s pool_size=37
+  [CrossEncoder_advance/flat] query 14/35
+    timing: llm_rewrite=1.17s pool=0.01s jina_rerank=0.17s pool_size=38
+  [CrossEncoder_advance/flat] query 15/35
+    timing: llm_rewrite=1.03s pool=0.01s jina_rerank=0.10s pool_size=42
+  [CrossEncoder_advance/flat] query 16/35
+    timing: llm_rewrite=0.76s pool=0.01s jina_rerank=0.35s pool_size=32
+  [CrossEncoder_advance/flat] query 17/35
+    timing: llm_rewrite=0.95s pool=0.01s jina_rerank=0.13s pool_size=44
+  [CrossEncoder_advance/flat] query 18/35
+    timing: llm_rewrite=1.09s pool=0.01s jina_rerank=0.46s pool_size=40
+  [CrossEncoder_advance/flat] query 19/35
+    timing: llm_rewrite=0.68s pool=0.01s jina_rerank=0.15s pool_size=39
+  [CrossEncoder_advance/flat] query 20/35
+    timing: llm_rewrite=0.65s pool=0.01s jina_rerank=0.40s pool_size=39
+  [CrossEncoder_advance/flat] query 21/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.14s pool_size=36
+  [CrossEncoder_advance/flat] query 22/35
+    timing: llm_rewrite=0.86s pool=0.01s jina_rerank=0.24s pool_size=42
+  [CrossEncoder_advance/flat] query 23/35
+    timing: llm_rewrite=1.00s pool=0.01s jina_rerank=0.08s pool_size=38
+  [CrossEncoder_advance/flat] query 24/35
+    timing: llm_rewrite=0.98s pool=0.01s jina_rerank=0.28s pool_size=41
+  [CrossEncoder_advance/flat] query 25/35
+    timing: llm_rewrite=0.86s pool=0.01s jina_rerank=0.32s pool_size=38
+  [CrossEncoder_advance/flat] query 26/35
+    timing: llm_rewrite=0.78s pool=0.01s jina_rerank=0.21s pool_size=43
+  [CrossEncoder_advance/flat] query 27/35
+    timing: llm_rewrite=1.11s pool=0.01s jina_rerank=0.10s pool_size=30
+  [CrossEncoder_advance/flat] query 28/35
+    timing: llm_rewrite=0.99s pool=0.01s jina_rerank=0.16s pool_size=40
+  [CrossEncoder_advance/flat] query 29/35
+    timing: llm_rewrite=0.80s pool=0.01s jina_rerank=0.20s pool_size=44
+  [CrossEncoder_advance/flat] query 30/35
+    timing: llm_rewrite=1.14s pool=0.01s jina_rerank=0.14s pool_size=44
+  [CrossEncoder_advance/flat] query 31/35
+    timing: llm_rewrite=1.30s pool=0.01s jina_rerank=0.14s pool_size=35
+  [CrossEncoder_advance/flat] query 32/35
+    timing: llm_rewrite=1.25s pool=0.01s jina_rerank=0.09s pool_size=39
+  [CrossEncoder_advance/flat] query 33/35
+    timing: llm_rewrite=0.82s pool=0.01s jina_rerank=0.20s pool_size=47
+  [CrossEncoder_advance/flat] query 34/35
+    timing: llm_rewrite=1.61s pool=0.01s jina_rerank=0.08s pool_size=44
+  [CrossEncoder_advance/flat] query 35/35
+    timing: llm_rewrite=1.13s pool=0.01s jina_rerank=0.30s pool_size=40
+  [CrossEncoder_advance/labeled] query 1/35
+    timing: llm_rewrite=0.69s pool=0.01s jina_rerank=0.08s pool_size=35
+  [CrossEncoder_advance/labeled] query 2/35
+    timing: llm_rewrite=1.01s pool=0.01s jina_rerank=0.27s pool_size=44
+  [CrossEncoder_advance/labeled] query 3/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.20s pool_size=35
+  [CrossEncoder_advance/labeled] query 4/35
+    timing: llm_rewrite=0.92s pool=0.01s jina_rerank=0.44s pool_size=37
+  [CrossEncoder_advance/labeled] query 5/35
+    timing: llm_rewrite=1.09s pool=0.01s jina_rerank=0.39s pool_size=41
+  [CrossEncoder_advance/labeled] query 6/35
+    timing: llm_rewrite=0.88s pool=0.01s jina_rerank=0.17s pool_size=36
+  [CrossEncoder_advance/labeled] query 7/35
+    timing: llm_rewrite=1.23s pool=0.01s jina_rerank=0.10s pool_size=26
+  [CrossEncoder_advance/labeled] query 8/35
+    timing: llm_rewrite=0.83s pool=0.01s jina_rerank=0.14s pool_size=39
+  [CrossEncoder_advance/labeled] query 9/35
+    timing: llm_rewrite=0.98s pool=0.01s jina_rerank=0.11s pool_size=31
+  [CrossEncoder_advance/labeled] query 10/35
+    timing: llm_rewrite=1.91s pool=0.01s jina_rerank=0.11s pool_size=43
+  [CrossEncoder_advance/labeled] query 11/35
+    timing: llm_rewrite=1.09s pool=0.01s jina_rerank=0.08s pool_size=45
+  [CrossEncoder_advance/labeled] query 12/35
+    timing: llm_rewrite=1.00s pool=0.01s jina_rerank=0.21s pool_size=39
+  [CrossEncoder_advance/labeled] query 13/35
+    timing: llm_rewrite=0.99s pool=0.01s jina_rerank=0.23s pool_size=37
+  [CrossEncoder_advance/labeled] query 14/35
+    timing: llm_rewrite=1.01s pool=0.01s jina_rerank=0.19s pool_size=40
+  [CrossEncoder_advance/labeled] query 15/35
+    timing: llm_rewrite=0.97s pool=0.01s jina_rerank=0.10s pool_size=42
+  [CrossEncoder_advance/labeled] query 16/35
+    timing: llm_rewrite=0.76s pool=0.01s jina_rerank=0.37s pool_size=31
+  [CrossEncoder_advance/labeled] query 17/35
+    timing: llm_rewrite=0.94s pool=0.01s jina_rerank=0.14s pool_size=45
+  [CrossEncoder_advance/labeled] query 18/35
+    timing: llm_rewrite=1.10s pool=0.01s jina_rerank=0.50s pool_size=40
+  [CrossEncoder_advance/labeled] query 19/35
+    timing: llm_rewrite=1.03s pool=0.01s jina_rerank=0.14s pool_size=38
+  [CrossEncoder_advance/labeled] query 20/35
+    timing: llm_rewrite=0.94s pool=0.01s jina_rerank=0.39s pool_size=37
+  [CrossEncoder_advance/labeled] query 21/35
+    timing: llm_rewrite=0.85s pool=0.01s jina_rerank=0.17s pool_size=36
+  [CrossEncoder_advance/labeled] query 22/35
+    timing: llm_rewrite=1.14s pool=0.01s jina_rerank=0.27s pool_size=42
+  [CrossEncoder_advance/labeled] query 23/35
+    timing: llm_rewrite=0.95s pool=0.01s jina_rerank=0.09s pool_size=38
+  [CrossEncoder_advance/labeled] query 24/35
+    timing: llm_rewrite=1.01s pool=0.01s jina_rerank=0.29s pool_size=41
+  [CrossEncoder_advance/labeled] query 25/35
+    timing: llm_rewrite=1.04s pool=0.01s jina_rerank=0.37s pool_size=40
+  [CrossEncoder_advance/labeled] query 26/35
+    timing: llm_rewrite=0.90s pool=0.01s jina_rerank=0.23s pool_size=45
+  [CrossEncoder_advance/labeled] query 27/35
+    timing: llm_rewrite=1.12s pool=0.01s jina_rerank=0.13s pool_size=31
+  [CrossEncoder_advance/labeled] query 28/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.17s pool_size=40
+  [CrossEncoder_advance/labeled] query 29/35
+    timing: llm_rewrite=0.79s pool=0.01s jina_rerank=0.21s pool_size=44
+  [CrossEncoder_advance/labeled] query 30/35
+    timing: llm_rewrite=1.11s pool=0.01s jina_rerank=0.17s pool_size=45
+  [CrossEncoder_advance/labeled] query 31/35
+    timing: llm_rewrite=1.08s pool=0.01s jina_rerank=0.15s pool_size=38
+  [CrossEncoder_advance/labeled] query 32/35
+    timing: llm_rewrite=1.07s pool=0.01s jina_rerank=0.10s pool_size=37
+  [CrossEncoder_advance/labeled] query 33/35
+    timing: llm_rewrite=0.83s pool=0.01s jina_rerank=0.15s pool_size=46
+  [CrossEncoder_advance/labeled] query 34/35
+    timing: llm_rewrite=1.22s pool=0.01s jina_rerank=0.09s pool_size=45
+  [CrossEncoder_advance/labeled] query 35/35
+    timing: llm_rewrite=1.04s pool=0.01s jina_rerank=0.31s pool_size=40
+  [CrossEncoder_advance/summary] query 1/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.17s pool_size=39
+  [CrossEncoder_advance/summary] query 2/35
+    timing: llm_rewrite=0.85s pool=0.01s jina_rerank=0.42s pool_size=44
+  [CrossEncoder_advance/summary] query 3/35
+    timing: llm_rewrite=1.15s pool=0.01s jina_rerank=0.26s pool_size=33
+  [CrossEncoder_advance/summary] query 4/35
+    timing: llm_rewrite=0.91s pool=0.01s jina_rerank=0.39s pool_size=34
+  [CrossEncoder_advance/summary] query 5/35
+    timing: llm_rewrite=0.89s pool=0.01s jina_rerank=0.53s pool_size=38
+  [CrossEncoder_advance/summary] query 6/35
+    timing: llm_rewrite=0.81s pool=0.01s jina_rerank=0.23s pool_size=33
+  [CrossEncoder_advance/summary] query 7/35
+    timing: llm_rewrite=0.92s pool=0.01s jina_rerank=0.16s pool_size=28
+  [CrossEncoder_advance/summary] query 8/35
+    timing: llm_rewrite=1.07s pool=0.01s jina_rerank=0.21s pool_size=39
+  [CrossEncoder_advance/summary] query 9/35
+    timing: llm_rewrite=0.90s pool=0.01s jina_rerank=0.16s pool_size=30
+  [CrossEncoder_advance/summary] query 10/35
+    timing: llm_rewrite=1.31s pool=0.01s jina_rerank=0.16s pool_size=45
+  [CrossEncoder_advance/summary] query 11/35
+    timing: llm_rewrite=0.85s pool=0.01s jina_rerank=0.14s pool_size=45
+  [CrossEncoder_advance/summary] query 12/35
+    timing: llm_rewrite=1.02s pool=0.01s jina_rerank=0.25s pool_size=39
+  [CrossEncoder_advance/summary] query 13/35
+    timing: llm_rewrite=1.13s pool=0.01s jina_rerank=0.45s pool_size=39
+  [CrossEncoder_advance/summary] query 14/35
+    timing: llm_rewrite=0.91s pool=0.01s jina_rerank=0.29s pool_size=42
+  [CrossEncoder_advance/summary] query 15/35
+    timing: llm_rewrite=1.04s pool=0.01s jina_rerank=0.21s pool_size=41
+  [CrossEncoder_advance/summary] query 16/35
+    timing: llm_rewrite=0.76s pool=0.01s jina_rerank=0.20s pool_size=36
+  [CrossEncoder_advance/summary] query 17/35
+    timing: llm_rewrite=0.91s pool=0.01s jina_rerank=0.24s pool_size=45
+  [CrossEncoder_advance/summary] query 18/35
+    timing: llm_rewrite=1.12s pool=0.01s jina_rerank=0.29s pool_size=42
+  [CrossEncoder_advance/summary] query 19/35
+    timing: llm_rewrite=0.94s pool=0.01s jina_rerank=0.64s pool_size=43
+  [CrossEncoder_advance/summary] query 20/35
+    timing: llm_rewrite=0.94s pool=0.01s jina_rerank=0.49s pool_size=37
+  [CrossEncoder_advance/summary] query 21/35
+    timing: llm_rewrite=1.04s pool=0.01s jina_rerank=0.18s pool_size=35
+  [CrossEncoder_advance/summary] query 22/35
+    timing: llm_rewrite=0.83s pool=0.01s jina_rerank=0.24s pool_size=33
+  [CrossEncoder_advance/summary] query 23/35
+    timing: llm_rewrite=1.00s pool=0.01s jina_rerank=0.22s pool_size=42
+  [CrossEncoder_advance/summary] query 24/35
+    timing: llm_rewrite=1.00s pool=0.01s jina_rerank=0.47s pool_size=41
+  [CrossEncoder_advance/summary] query 25/35
+    timing: llm_rewrite=0.86s pool=0.01s jina_rerank=0.51s pool_size=40
+  [CrossEncoder_advance/summary] query 26/35
+    timing: llm_rewrite=0.91s pool=0.01s jina_rerank=0.31s pool_size=43
+  [CrossEncoder_advance/summary] query 27/35
+    timing: llm_rewrite=1.11s pool=0.01s jina_rerank=0.22s pool_size=30
+  [CrossEncoder_advance/summary] query 28/35
+    timing: llm_rewrite=0.98s pool=0.01s jina_rerank=0.38s pool_size=41
+  [CrossEncoder_advance/summary] query 29/35
+    timing: llm_rewrite=0.96s pool=0.01s jina_rerank=0.22s pool_size=40
+  [CrossEncoder_advance/summary] query 30/35
+    timing: llm_rewrite=0.79s pool=0.01s jina_rerank=0.28s pool_size=42
+  [CrossEncoder_advance/summary] query 31/35
+    timing: llm_rewrite=0.74s pool=0.01s jina_rerank=0.27s pool_size=32
+  [CrossEncoder_advance/summary] query 32/35
+    timing: llm_rewrite=1.23s pool=0.01s jina_rerank=0.16s pool_size=37
+  [CrossEncoder_advance/summary] query 33/35
+    timing: llm_rewrite=0.98s pool=0.01s jina_rerank=0.29s pool_size=45
+  [CrossEncoder_advance/summary] query 34/35
+    timing: llm_rewrite=1.28s pool=0.01s jina_rerank=0.17s pool_size=43
+  [CrossEncoder_advance/summary] query 35/35
+    timing: llm_rewrite=0.79s pool=0.01s jina_rerank=0.45s pool_size=38
+
+==============================================================================
+method                 variant  bAcc(mean/med)     MCC(mean/med)         FP
+------------------------------------------------------------------------------
+RRF                    current  0.861/0.892      0.680/0.691        114
+RRF                    flat     0.853/0.904      0.664/0.691        112
+RRF                    labeled  0.844/0.881      0.644/0.698        123
+RRF                    summary  0.824/0.821      0.548/0.549        192
+  -> delta (flat-current)      bAcc -0.008   MCC -0.016   FP -2
+  -> delta (labeled-current)   bAcc -0.018   MCC -0.035   FP +9
+  -> delta (summary-current)   bAcc -0.037   MCC -0.132   FP +78
+
+CrossEncoder_base      current  0.709/0.625      0.468/0.426         15
+CrossEncoder_base      flat     0.710/0.625      0.471/0.441         15
+CrossEncoder_base      labeled  0.696/0.625      0.441/0.427         11
+CrossEncoder_base      summary  0.759/0.717      0.530/0.481         80
+  -> delta (flat-current)      bAcc +0.001   MCC +0.003   FP +0
+  -> delta (labeled-current)   bAcc -0.014   MCC -0.027   FP -4
+  -> delta (summary-current)   bAcc +0.050   MCC +0.062   FP +65
+
+CrossEncoder_advance   current  0.711/0.738      0.273/0.277        463
+CrossEncoder_advance   flat     0.698/0.707      0.252/0.232        496
+CrossEncoder_advance   labeled  0.733/0.765      0.316/0.318        382
+CrossEncoder_advance   summary  0.682/0.667      0.228/0.262        363
+  -> delta (flat-current)      bAcc -0.013   MCC -0.020   FP +33
+  -> delta (labeled-current)   bAcc +0.022   MCC +0.043   FP -81
+  -> delta (summary-current)   bAcc -0.029   MCC -0.044   FP -100
+
+wrote flatten_ab_results.json

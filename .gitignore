@@ -20,3 +20,12 @@ run_results/
 run_results_gte_jina/
 run_results_query_rewrites/
 run_results_sample30/
+
+# macOS / local agent config
+.DS_Store
+.claude/settings.local.json
+
+# Point-in-time ConfigMap exports: regenerate from the manifests' comment blocks
+# instead (an earlier export shipped the stale pre-D2 flatten_ab_eval.py).
+evaluate/k8s/configmaps/
+curated_summaries_35q/

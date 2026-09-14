@@ -1,0 +1,84 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-eval-ndcg
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-eval-ndcg
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-eval-ndcg
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /app
+        command: ["python", "ndcg_eval.py"]
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: NDCG_EVAL_FILE
+          value: "/app/final_evaluation_dataset.jsonl.gz"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        volumeMounts:
+        - name: eval-script
+          mountPath: /app/flatten_ab_eval.py
+          subPath: flatten_ab_eval.py
+        - name: eval-summaries
+          mountPath: /app/curated_summaries_35q
+        - name: eval-ndcg
+          mountPath: /app/ndcg_eval.py
+          subPath: ndcg_eval.py
+        - name: eval-ndcg
+          mountPath: /app/final_evaluation_dataset.jsonl.gz
+          subPath: final_evaluation_dataset.jsonl.gz
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "1"
+          limits:
+            memory: "10Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: eval-script
+        configMap:
+          name: cyberfaces-eval-flatten-ab-script
+      - name: eval-summaries
+        configMap:
+          name: cyberfaces-eval-flatten-ab-summaries
+      - name: eval-ndcg
+        configMap:
+          name: cyberfaces-eval-ndcg
+---
+# Regenerate cyberfaces-eval-ndcg (ndcg_eval.py + the gzipped 1,035-query graded
+# ground truth). Note: NDCG_EVAL_FILE reads the .gz directly via Python's gzip
+# module, so no unzip step is needed at container startup.
+#
+#   gzip -9 -c "final_evaluation_dataset (2).jsonl" > /tmp/final_evaluation_dataset.jsonl.gz
+#   kubectl --context=anvil create configmap cyberfaces-eval-ndcg \
+#     --from-file=ndcg_eval.py=./ndcg_eval.py \
+#     --from-file=final_evaluation_dataset.jsonl.gz=/tmp/final_evaluation_dataset.jsonl.gz \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+# Experiment 6: RRF vs. CrossEncoder_advance (both on the "summary" text variant),
+# scored by NDCG@10/MRR/P@10/R@10 against the 1,035-query graded ground truth.

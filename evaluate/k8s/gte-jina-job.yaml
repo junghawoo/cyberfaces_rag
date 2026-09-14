@@ -1,0 +1,122 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-gte-jina
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-gte-jina
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-gte-jina
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work
+        command: ["sh", "-c"]
+        args:
+        - |
+          mkdir -p /work/courses_md /work/freshcache
+          gunzip -c /cm/ground_truth.jsonl.gz > /work/final_evaluation_dataset.jsonl
+          echo "WAITING_FOR_UPLOAD"
+          while [ ! -f /work/READY ]; do sleep 3; done
+          echo "UPLOAD_RECEIVED"
+          tar xzf /work/courses_md.tar.gz -C /work
+          python compare_gte_vs_jina.py --methods jina --candidate_pool 50 \
+            --ground_truth /work/final_evaluation_dataset.jsonl \
+            --courses_md /work/courses_md \
+            --cache_dir /work/freshcache \
+            --export_dir /work/out
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-hf-token
+              key: token
+        - name: HUGGING_FACE_HUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-hf-token
+              key: token
+        volumeMounts:
+        - name: gte-jina-code
+          mountPath: /work/compare_gte_vs_jina.py
+          subPath: compare_gte_vs_jina.py
+        - name: gte-jina-code
+          mountPath: /work/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: gte-jina-code
+          mountPath: /cm/ground_truth.jsonl.gz
+          subPath: ground_truth.jsonl.gz
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "1"
+          limits:
+            memory: "14Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: gte-jina-code
+        configMap:
+          name: cyberfaces-gte-jina-code
+---
+# Regenerate cyberfaces-gte-jina-code:
+#
+#   gzip -9 -c ./evaluate/final_evaluation_dataset.jsonl > /tmp/gt.jsonl.gz   # the 996-query set
+#   kubectl --context=anvil create configmap cyberfaces-gte-jina-code \
+#     --from-file=compare_gte_vs_jina.py=./evaluate/compare_gte_vs_jina.py \
+#     --from-file=calculate_ndcg.py=./evaluate/calculate_ndcg.py \
+#     --from-file=ground_truth.jsonl.gz=/tmp/gt.jsonl.gz \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+# HF token secret (needed once HuggingFace started rate-limiting anonymous
+# downloads from repeated fresh model pulls across this session's many Jobs --
+# a free "Read" token from huggingface.co/settings/tokens is enough):
+#
+#   printf '%s' "hf_xxx..." > /tmp/.hf_token   # never pass the token as a literal CLI arg
+#   kubectl --context=anvil create secret generic cyberfaces-hf-token \
+#     -n cyberfaces-dev --from-file=token=/tmp/.hf_token
+#   shred -u /tmp/.hf_token
+#
+# courses_md/ (11MB raw, ~3MB gzipped) is too large for a ConfigMap (~1MiB
+# practical limit), so it's uploaded directly into the RUNNING pod instead:
+#
+#   tar czf /tmp/courses_md.tar.gz -C . courses_md
+#   kubectl --context=anvil apply -f gte-jina-job.yaml
+#   # wait for the pod to reach Running / print "WAITING_FOR_UPLOAD", THEN:
+#   POD=$(kubectl --context=anvil get pods -n cyberfaces-dev -l app=cyberfaces-gte-jina \
+#          --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1:].metadata.name}')
+#   kubectl --context=anvil cp /tmp/courses_md.tar.gz cyberfaces-dev/"$POD":/work/courses_md.tar.gz
+#   kubectl --context=anvil exec -n cyberfaces-dev "$POD" -- touch /work/READY
+#
+# Two device-placement bugs were found and fixed in compare_gte_vs_jina.py itself
+# (same class of bug as flatten_ab_eval.py's, see README.md "Why the rerankers underperform" /
+# conversation history): (1) the gte embedder's device selection only checked for
+# MPS (Apple Silicon) or CPU, never CUDA; (2) the jina reranker was never moved to
+# any device at all. Both fixed with `.to("cuda" if torch.cuda.is_available() else ...)`.
+# A THIRD issue -- the original script's MPS-OOM CPU-embedding workaround for long
+# documents (>4096 tokens) was firing needlessly on CUDA, adding ~100 minutes of
+# unnecessary CPU embedding -- was also patched to only apply on actual MPS devices.
+#
+# Experiment 2: gte-large-en-v1.5 (long-context, full module markdown content,
+# <9000 tokens, 297/346 modules kept) semantic search alone vs. jina-v3 reranking
+# its top-50. This is the ONE experiment across the whole document where reranking
+# improved NDCG@10 (0.567 -> 0.623) -- see the artifact's synthesis section.

@@ -1,0 +1,117 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-gte-baseline
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-gte-baseline
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-gte-baseline
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /work
+        command: ["sh", "-c"]
+        args:
+        - |
+          mkdir -p /work/courses_md /work/freshcache
+          gunzip -c /cm/ground_truth.jsonl.gz > /work/final_evaluation_dataset.jsonl
+          echo "WAITING_FOR_UPLOAD"
+          while [ ! -f /work/READY ]; do sleep 3; done
+          echo "UPLOAD_RECEIVED"
+          tar xzf /work/courses_md.tar.gz -C /work
+          python compare_gte_vs_jina.py --methods gte --candidate_pool 50 \
+            --ground_truth /work/final_evaluation_dataset.jsonl \
+            --courses_md /work/courses_md \
+            --cache_dir /work/freshcache \
+            --export_dir /work/out
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-hf-token
+              key: token
+        - name: HUGGING_FACE_HUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-hf-token
+              key: token
+        volumeMounts:
+        - name: gte-jina-code
+          mountPath: /work/compare_gte_vs_jina.py
+          subPath: compare_gte_vs_jina.py
+        - name: gte-jina-code
+          mountPath: /work/calculate_ndcg.py
+          subPath: calculate_ndcg.py
+        - name: gte-jina-code
+          mountPath: /cm/ground_truth.jsonl.gz
+          subPath: ground_truth.jsonl.gz
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "1"
+          limits:
+            memory: "14Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: gte-jina-code
+        configMap:
+          name: cyberfaces-gte-jina-code
+---
+# Experiment 2's MISSING semantic-only baseline.
+#
+# gte-jina-job.yaml runs `--methods jina`, so it prints ONLY the reranked row.
+# Experiment 2's documented table has two rows -- "Meaning search alone"
+# (NDCG@10 0.567) and "Meaning search + re-checker" (0.623) -- and the semantic
+# row was never produced by the Anvil job at all. It came from the older local
+# CPU run whose per-query rankings are still in the repo at
+# run_results_gte_jina/gte_results.jsonl (dated 2026-07-02).
+#
+# That matters because the two rows were scored under DIFFERENT conventions:
+#   - Scoring run_results_gte_jina/gte_results.jsonl with the ground truth
+#     restricted to the 297 token-filtered modules (what compare_gte_vs_jina.py's
+#     load_ground_truth() actually does today) gives NDCG@10 0.635 / R@10 0.622.
+#   - Scoring the SAME rankings with the ground truth left unrestricted (all
+#     judged docs counting toward IDCG and the recall denominator) reproduces the
+#     documented row to three decimals on all four metrics: 0.567/0.610,
+#     MRR 0.809, P@10 0.331, R@10 0.513/0.500.
+# The reranked row, by contrast, reproduces exactly under the RESTRICTED
+# convention (this session's Anvil run: 0.6227/0.6738, MRR 0.8131, P@10 0.2902,
+# R@10 0.5613 vs documented 0.623/0.674/0.813/0.290/0.561).
+#
+# So the documented +0.056 NDCG@10 gain attributed to reranking compares an
+# unrestricted-denominator semantic row against a restricted-denominator
+# reranked row. This Job re-derives the semantic row on the same GPU, same
+# corpus, same ground truth, and the same scoring path as the reranked row, so
+# the two are finally directly comparable.
+#
+# Needs the same courses_md upload dance as gte-jina-job.yaml:
+#
+#   tar czf /tmp/courses_md.tar.gz -C . courses_md
+#   kubectl --context=anvil apply -f evaluate/k8s/gte-baseline-job.yaml
+#   POD=$(kubectl --context=anvil get pods -n cyberfaces-dev -l app=cyberfaces-gte-baseline \
+#          --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1:].metadata.name}')
+#   kubectl --context=anvil cp /tmp/courses_md.tar.gz cyberfaces-dev/"$POD":/work/courses_md.tar.gz
+#   kubectl --context=anvil exec -n cyberfaces-dev "$POD" -- touch /work/READY
+#
+# Cheap: ~17s to embed the 297 modules on an H100, no reranking pass at all.

@@ -1,0 +1,66 @@
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+1035 queries
+0 expansions already cached
+  expansion 50/1035
+  expansion 100/1035
+  expansion 150/1035
+  expansion 200/1035
+  expansion 250/1035
+  expansion 300/1035
+  expansion 350/1035
+  expansion 400/1035
+  expansion 450/1035
+  expansion 500/1035
+  expansion 550/1035
+  expansion 600/1035
+  expansion 650/1035
+  expansion 700/1035
+  expansion 750/1035
+  expansion 800/1035
+  expansion 850/1035
+  expansion 900/1035
+  expansion 950/1035
+  expansion 1000/1035
+  expansion 1035/1035
+Loading BM25 retriever...
+Loading vector DB + documents...
+A new version of the following files was downloaded from https://huggingface.co/Alibaba-NLP/new-impl:
+- configuration.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/Alibaba-NLP/new-impl:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+336
+Current Space2: cosine
+Data from /work/data.jsonl successfully embedded and stored in /work/chromaDB
+Loading BM25 index...
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt.zip.
+[nltk_data] Downloading package punkt_tab to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt_tab.zip.
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Unzipping corpora/stopwords.zip.
+  bm25/original: 200/1035
+  bm25/original: 400/1035
+  bm25/original: 600/1035
+  bm25/original: 800/1035
+  bm25/original: 1000/1035
+  bm25/expanded: 200/1035
+  bm25/expanded: 400/1035
+  bm25/expanded: 600/1035
+  bm25/expanded: 800/1035
+  bm25/expanded: 1000/1035
+
+==============================================================================
+BM25 query-expansion comparison  |  K=10  |  rel>=1  |  n=1035
+==============================================================================
+variant                  NDCG@K (mn/med)      MRR (mn/med)      P@K (mn/med)      R@K (mn/med)
+----------------------------------------------------------------------------------------------
+original                0.4159/0.4212    0.6942/1.0000    0.2858/0.3000    0.3645/0.3333  
+expanded                0.4469/0.4570    0.7168/1.0000    0.3112/0.3000    0.3978/0.4000  
+  delta (expanded-original)           +0.0310           +0.0227           +0.0254           +0.0332
+==============================================================================
+wrote bm25_expansion_results.json

@@ -1,0 +1,105 @@
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+Loading vector DB + documents...
+A new version of the following files was downloaded from https://huggingface.co/Alibaba-NLP/new-impl:
+- configuration.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/Alibaba-NLP/new-impl:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+336
+Current Space2: cosine
+Data from /work/data.jsonl successfully embedded and stored in /work/chromaDB
+Loading BM25 index...
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt.zip.
+[nltk_data] Downloading package punkt_tab to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt_tab.zip.
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Unzipping corpora/stopwords.zip.
+Loading reranker (this can be a large download / slow on CPU)...
+MiniLM Device: cuda:0
+A new version of the following files was downloaded from https://huggingface.co/jinaai/jina-reranker-v3:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+
+Running method: bm25  (1035 queries)
+  50/1035
+  100/1035
+  150/1035
+  200/1035
+  250/1035
+  300/1035
+  350/1035
+  400/1035
+  450/1035
+  500/1035
+  550/1035
+  600/1035
+  650/1035
+  700/1035
+  750/1035
+  800/1035
+  850/1035
+  900/1035
+  950/1035
+  1000/1035
+  wrote /work/evaluate/run_results_exp1_1035q/bm25_results.jsonl
+
+Running method: vector  (1035 queries)
+  50/1035
+  100/1035
+  150/1035
+  200/1035
+  250/1035
+  300/1035
+  350/1035
+  400/1035
+  450/1035
+  500/1035
+  550/1035
+  600/1035
+  650/1035
+  700/1035
+  750/1035
+  800/1035
+  850/1035
+  900/1035
+  950/1035
+  1000/1035
+  wrote /work/evaluate/run_results_exp1_1035q/vector_results.jsonl
+
+Running method: rerank  (1035 queries)
+  50/1035
+  100/1035
+  150/1035
+  200/1035
+  250/1035
+  300/1035
+  350/1035
+  400/1035
+  450/1035
+  500/1035
+  550/1035
+  600/1035
+  650/1035
+  700/1035
+  750/1035
+  800/1035
+  850/1035
+  900/1035
+  950/1035
+  1000/1035
+  wrote /work/evaluate/run_results_exp1_1035q/rerank_results.jsonl
+
+==============================================================================
+Retrieval comparison  |  K=10  |  rel_threshold>=1  |  candidate_pool=50  |  queries=1035
+==============================================================================
+Method                     NDCG@K (mn/med)        MRR (mn/med)        P@K (mn/med)        R@K (mn/med)
+------------------------------------------------------------------------------------------------------
+BM25 (keyword)           0.4159/0.4212      0.6942/1.0000      0.2858/0.3000      0.3645/0.3333   
+Vector (MPNet)           0.5235/0.5597      0.8255/1.0000      0.3787/0.4000      0.4810/0.5000   
+Vector+Jina rerank       0.4905/0.5244      0.7977/1.0000      0.3187/0.3000      0.4076/0.4000   
+==============================================================================

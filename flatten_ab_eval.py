@@ -35,7 +35,7 @@ Notes
   analysis/CrossEncoder.json (eval threshold -0.1).
 """
 
-import argparse, json, os, re, html, copy, sys
+import argparse, json, os, re, html, copy, sys, glob
 import numpy as np
 
 # ----------------------------------------------------------------------------
@@ -50,6 +50,15 @@ ADV_CE_MODEL      = "jinaai/jina-reranker-v3"
 DATA_FILE         = "./data.jsonl"
 MAP_FILE          = "./course_unit_map.jsonl"
 EVAL_FILE         = "./gemini_generate_dataset_updateByHuman.jsonl"
+SUMMARY_DIR       = "./curated_summaries_35q"  # NOTE: renamed here to avoid colliding with this
+                                                # repo's own pre-existing ./summaries/ (346 files,
+                                                # unit_N__slug.md -- a different corpus used by
+                                                # evaluate/compare_gte_vs_jina.py and
+                                                # evaluate/compare_rewrites_summaries.py). The
+                                                # curated 239-file set this script actually needs
+                                                # (NNN-slug.md, from make_module_summaries.py +
+                                                # generate_descriptions.py) lives at
+                                                # ./curated_summaries_35q/ instead.
 CE_EVAL_THRESHOLD = -0.1      # threshold used for CrossEncoder in /evaluate
 
 # ----------------------------------------------------------------------------
@@ -89,6 +98,34 @@ def build_text(title, desc, variant, drop_commas=False):
         # explicit field labels, e.g. "title: <title> description: <desc>"
         return (f"title: {title} description: {desc}") if desc else (f"title: {title}")
     raise ValueError(variant)
+
+# ----------------------------------------------------------------------------
+# "summary" variant: curated per-module text from summaries/*.md (see
+# make_module_summaries.py / generate_descriptions.py) instead of the raw
+# catalog title+description. Files are named "<id>-<slug>.md" and hold a
+# "## Description" section (sometimes AI-generated, labeled as such) and an
+# optional "## Objectives" bullet list.
+# ----------------------------------------------------------------------------
+_SUMMARY_FNAME = re.compile(r"^(\d+)-")
+_SUMMARY_SECTION = re.compile(r"^## (\w+)\s*\n(.*?)(?=\n## |\Z)", re.S | re.M)
+_AI_GENERATED_LABEL = re.compile(r"_AI-generated.*?:_\s*", re.S)
+
+def parse_summary_md(path):
+    text = open(path, encoding="utf-8").read()
+    lines = text.splitlines()
+    title = lines[0][2:].strip() if lines and lines[0].startswith("# ") else ""
+    sections = {name: body.strip() for name, body in _SUMMARY_SECTION.findall(text)}
+    desc = _AI_GENERATED_LABEL.sub("", sections.get("Description", "")).strip()
+    objs = " ".join(l.lstrip("-* ").strip() for l in sections.get("Objectives", "").splitlines() if l.strip())
+    return flatten_text(". ".join(p for p in (title, desc, objs) if p))
+
+def load_summaries(summary_dir=SUMMARY_DIR):
+    out = {}
+    for path in glob.glob(os.path.join(summary_dir, "*.md")):
+        m = _SUMMARY_FNAME.match(os.path.basename(path))
+        if m:
+            out[int(m.group(1))] = parse_summary_md(path)
+    return out
 
 # ----------------------------------------------------------------------------
 # lexical preprocessing  (copied verbatim from app/main.py)
@@ -138,11 +175,20 @@ def calculate_fixed_pool(retrieved_items, expected_ids, threshold):
 # corpus / index for one text variant
 # ----------------------------------------------------------------------------
 class Index:
-    def __init__(self, docs, variant, embedder, drop_commas=False):
+    def __init__(self, docs, variant, embedder, drop_commas=False, summaries=None):
         from rank_bm25 import BM25Okapi
         self.ids    = [d["id"] for d in docs]
-        self.texts  = [build_text(d.get("title"), d.get("description"), variant, drop_commas)
-                       for d in docs]
+        if variant == "summary":
+            summaries = summaries or {}
+            # fall back to "current" text for docs with no curated summary,
+            # so the corpus stays complete and coverage gaps don't masquerade
+            # as a text-quality effect.
+            self.texts = [summaries.get(d["id"]) or
+                          build_text(d.get("title"), d.get("description"), "current", drop_commas)
+                          for d in docs]
+        else:
+            self.texts = [build_text(d.get("title"), d.get("description"), variant, drop_commas)
+                          for d in docs]
         self.id2text = dict(zip(self.ids, self.texts))
         self.stemmer = PorterStemmer()
         self.bm25 = BM25Okapi([deep_clean_query(t, self.stemmer) for t in self.texts])
@@ -205,14 +251,20 @@ def eval_cross_base(idx, query, expected, ce):
     return calculate_fixed_pool(items, expected, CE_EVAL_THRESHOLD)
 
 def eval_cross_advance(idx, query, expected, adv, api_key):
+    import time
+    t0 = time.time()
     q = rewrite_query_with_llm(query, api_key)
+    t1 = time.time()
     instr = ("Given a course description, identify all documents that provide "
              "relevant information, even if they use different terminology or "
              "they are sub-topics. ")
     qi = f"instruction: {instr}\nquery: {q}"
     pool = _combined_pool(idx, query)
+    t2 = time.time()
     docs = [idx.id2text[i] for i in pool]
     res = adv.rerank(query=qi, documents=docs)
+    t3 = time.time()
+    print(f"    timing: llm_rewrite={t1-t0:.2f}s pool={t2-t1:.2f}s jina_rerank={t3-t2:.2f}s pool_size={len(pool)}", flush=True)
     # jina rerank() returns results sorted by score, each carrying an "index"
     # back into `docs`/`pool`; map score -> id via that index (do NOT zip with
     # pool positionally, since res is reordered).
@@ -220,17 +272,27 @@ def eval_cross_advance(idx, query, expected, adv, api_key):
     items.sort(key=lambda x: x["score"], reverse=True)
     return calculate_fixed_pool(items, expected, CE_EVAL_THRESHOLD)
 
-def rewrite_query_with_llm(question, api_key):
-    import requests
+def rewrite_query_with_llm(question, api_key, retries=2):
+    import requests, time
     prompt = ("### Role\nYou are an Academic Curriculum Designer. Transform casual "
               "queries into a professional 1-3 sentence course description. Provide "
               "only the rewritten description.")
-    r = requests.post("https://anvilgpt.rcac.purdue.edu/api/chat/completions",
-        headers={"Authorization":f"Bearer {api_key}","Content-Type":"application/json"},
-        json={"model":"gpt-oss:120b","temperature":0,"stream":False,
-              "messages":[{"role":"system","content":prompt},
-                          {"role":"user","content":question}]})
-    return json.loads(r.text)["choices"][0]["message"]["content"]
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            r = requests.post("https://anvilgpt.rcac.purdue.edu/api/chat/completions",
+                headers={"Authorization":f"Bearer {api_key}","Content-Type":"application/json"},
+                json={"model":"gpt-oss:120b","temperature":0,"stream":False,
+                      "messages":[{"role":"system","content":prompt},
+                                  {"role":"user","content":question}]},
+                timeout=60)
+            r.raise_for_status()
+            return json.loads(r.text)["choices"][0]["message"]["content"]
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                time.sleep(2 * (attempt + 1))
+    raise last_err
 
 # ----------------------------------------------------------------------------
 # driver
@@ -274,28 +336,36 @@ def main():
     docs = load_docs(); qm = load_eval()
     print(f"{len(docs)} docs, {len(qm)} eval queries")
 
-    print("building indices (current + flat + labeled) ...")
+    print("building indices (current + flat + labeled + summary) ...")
     idx_cur     = Index(docs, "current", embedder, args.drop_commas)
     idx_flat    = Index(docs, "flat",    embedder, args.drop_commas)
     idx_labeled = Index(docs, "labeled", embedder, args.drop_commas)
-    VARIANTS = (("current", idx_cur), ("flat", idx_flat), ("labeled", idx_labeled))
+    summaries   = load_summaries()
+    n_missing   = sum(1 for d in docs if d["id"] not in summaries)
+    print(f"  summary: {len(summaries)} curated .md files, {n_missing}/{len(docs)} docs fall back to current text")
+    idx_summary = Index(docs, "summary", embedder, args.drop_commas, summaries=summaries)
+    VARIANTS = (("current", idx_cur), ("flat", idx_flat), ("labeled", idx_labeled), ("summary", idx_summary))
 
     ce = adv = api = None
     if "CrossEncoder_base" in args.methods:
         print(f"loading base cross-encoder {BASE_CE_MODEL} ...")
         ce = CrossEncoder(BASE_CE_MODEL)
     if "CrossEncoder_advance" in args.methods:
+        import torch
         from transformers import AutoModel
         api = os.environ.get("ANVILGPT_API")
         if not api: sys.exit("ANVILGPT_API env var required for CrossEncoder_advance")
         print(f"loading advanced reranker {ADV_CE_MODEL} ...")
-        adv = AutoModel.from_pretrained(ADV_CE_MODEL, trust_remote_code=True).eval()
+        adv_device = "cuda" if torch.cuda.is_available() else "cpu"
+        adv = AutoModel.from_pretrained(ADV_CE_MODEL, trust_remote_code=True).eval().to(adv_device)
+        print(f"advanced reranker on device: {adv_device}")
 
     results = {}
     for method in args.methods:
         for variant, idx in VARIANTS:
             rows = []
-            for qid, info in qm.items():
+            for n, (qid, info) in enumerate(qm.items(), 1):
+                print(f"  [{method}/{variant}] query {n}/{len(qm)}", flush=True)
                 if method == "RRF":
                     rows.append(eval_rrf(idx, info["text"], info["expected"]))
                 elif method == "CrossEncoder_base":

@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-db-check
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-db-check
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-db-check
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: db-check
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        command: ["sh", "-c"]
+        args:
+        - |
+          pip install --quiet pymysql &&
+          python3 -c "
+          import pymysql, os
+          conn = pymysql.connect(host=os.environ['DB_HOST'], user=os.environ['DB_USER'],
+                                  password=os.environ['DB_PASSWORD'], database=os.environ['DB_NAME'],
+                                  connect_timeout=15)
+          cur = conn.cursor()
+          cur.execute('SELECT COUNT(*), MAX(id) FROM course_units')
+          print('COUNT/MAX:', cur.fetchone())
+          missing = [48,49,50,123,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367]
+          fmt = ','.join(str(m) for m in missing)
+          cur.execute(f'SELECT id, title, state, deleted_at FROM course_units WHERE id IN ({fmt}) ORDER BY id')
+          rows = cur.fetchall()
+          print('found', len(rows), 'of', len(missing), 'missing ids in the live DB:')
+          for r in rows: print(' ', r)
+          "
+        env:
+        - name: DB_HOST
+          valueFrom: {secretKeyRef: {name: cyberfaces-db-secrets, key: db-host}}
+        - name: DB_USER
+          valueFrom: {secretKeyRef: {name: cyberfaces-db-secrets, key: db-user}}
+        - name: DB_PASSWORD
+          valueFrom: {secretKeyRef: {name: cyberfaces-db-secrets, key: db-password}}
+        - name: DB_NAME
+          valueFrom: {secretKeyRef: {name: cyberfaces-db-secrets, key: db-name}}
+        resources:
+          requests: {memory: "256Mi", cpu: "200m"}
+          limits: {memory: "512Mi", cpu: "500m"}
+---
+# Not an experiment -- a one-off diagnostic. Confirmed directly against the live
+# production database (not just the synced data.jsonl snapshot) that 29 document
+# IDs referenced by the 1,035-query ground truth (including a contiguous block,
+# 343-367) genuinely do not exist: COUNT=310, MAX(id)=317, 0/29 missing IDs found.
+# This is what grounds Experiment 6's "40 queries excluded" handling and the
+# corpus-gap discussion throughout the conversation history / artifact.
+#
+# Reuses the existing cyberfaces-db-secrets (already present for the production
+# data-sync CronJob, see k8s-cronjob.yaml) -- no new secret needed.

@@ -1,0 +1,86 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cyberfaces-eval-flatten-ab
+  namespace: cyberfaces-dev
+  labels:
+    app: cyberfaces-eval-flatten-ab
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: cyberfaces-eval-flatten-ab
+    spec:
+      restartPolicy: Never
+      tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      - key: gpu
+        operator: Equal
+        value: h100
+        effect: NoSchedule
+      containers:
+      - name: eval
+        image: registry.anvil.rcac.purdue.edu/cyberfaces/cyberfaces-rag-deploy:67711f3
+        imagePullPolicy: IfNotPresent
+        workingDir: /app
+        command: ["python", "flatten_ab_eval.py", "--methods", "RRF", "CrossEncoder_base", "CrossEncoder_advance"]
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: ANVILGPT_API
+          valueFrom:
+            secretKeyRef:
+              name: cyberfaces-rag-secrets
+              key: anvilgpt-api
+        volumeMounts:
+        - name: eval-script
+          mountPath: /app/flatten_ab_eval.py
+          subPath: flatten_ab_eval.py
+        - name: eval-script
+          mountPath: /app/gemini_generate_dataset_updateByHuman.jsonl
+          subPath: gemini_generate_dataset_updateByHuman.jsonl
+        - name: eval-summaries
+          mountPath: /app/curated_summaries_35q
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "1"
+          limits:
+            memory: "10Gi"
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: eval-script
+        configMap:
+          name: cyberfaces-eval-flatten-ab-script
+      - name: eval-summaries
+        configMap:
+          name: cyberfaces-eval-flatten-ab-summaries
+---
+# Regenerate the ConfigMaps this Job mounts (run from the repo root):
+#
+#   kubectl --context=anvil create configmap cyberfaces-eval-flatten-ab-script \
+#     --from-file=flatten_ab_eval.py=./flatten_ab_eval.py \
+#     --from-file=gemini_generate_dataset_updateByHuman.jsonl=./gemini_generate_dataset_updateByHuman.jsonl \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+#   kubectl --context=anvil create configmap cyberfaces-eval-flatten-ab-summaries \
+#     --from-file=curated_summaries_35q/ \
+#     -n cyberfaces-dev --dry-run=client -o yaml | kubectl --context=anvil apply -f -
+#
+# NOTE: this command previously read `--from-file=summaries/`, which is WRONG --
+# ./summaries/ is a different, 346-file corpus (unit_N__slug.md) used by
+# evaluate/compare_gte_vs_jina.py and compare_rewrites_summaries.py. The curated
+# 239-file set flatten_ab_eval.py's SUMMARY_DIR wants is ./curated_summaries_35q/
+# (NNN-slug.md). The live ConfigMap was verified byte-identical to
+# curated_summaries_35q/ (239/239 files), so only the comment was stale -- but
+# regenerating from summaries/ would have silently broken Experiments 4-6.
+# The mountPath above is /app/curated_summaries_35q to match SUMMARY_DIR.
+#
+# Used by Experiments 4 (text formatting), 5 (curated summaries), and to build the
+# --methods RRF/CrossEncoder_advance rankings scored in Experiment 6's ndcg-job.yaml.

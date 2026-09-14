@@ -1,0 +1,352 @@
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+1035 queries, ground truth has 10428 existing judged rows
+Loading retrievers (BM25 + vector + reranker)...
+Loading vector DB + documents...
+A new version of the following files was downloaded from https://huggingface.co/Alibaba-NLP/new-impl:
+- configuration.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/Alibaba-NLP/new-impl:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+336
+Current Space2: cosine
+Data from /work/data.jsonl successfully embedded and stored in /work/chromaDB
+Loading BM25 index...
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt.zip.
+[nltk_data] Downloading package punkt_tab to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt_tab.zip.
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Unzipping corpora/stopwords.zip.
+Loading reranker (this can be a large download / slow on CPU)...
+MiniLM Device: cuda:0
+A new version of the following files was downloaded from https://huggingface.co/jinaai/jina-reranker-v3:
+- modeling.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+  [20/1035] elapsed=38s new_judged=250
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [40/1035] elapsed=71s new_judged=475
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [60/1035] elapsed=108s new_judged=718
+  [80/1035] elapsed=145s new_judged=964
+  [100/1035] elapsed=177s new_judged=1185
+  [120/1035] elapsed=210s new_judged=1408
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [140/1035] elapsed=248s new_judged=1648
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [160/1035] elapsed=287s new_judged=1893
+  [180/1035] elapsed=321s new_judged=2122
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [200/1035] elapsed=356s new_judged=2355
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [220/1035] elapsed=399s new_judged=2587
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [240/1035] elapsed=435s new_judged=2825
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [260/1035] elapsed=472s new_judged=3049
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [280/1035] elapsed=506s new_judged=3268
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [300/1035] elapsed=535s new_judged=3452
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [320/1035] elapsed=572s new_judged=3680
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [340/1035] elapsed=602s new_judged=3865
+  [360/1035] elapsed=636s new_judged=4104
+  [380/1035] elapsed=670s new_judged=4336
+  [400/1035] elapsed=706s new_judged=4548
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [420/1035] elapsed=751s new_judged=4752
+  [440/1035] elapsed=788s new_judged=5002
+  [460/1035] elapsed=818s new_judged=5198
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [480/1035] elapsed=858s new_judged=5422
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [500/1035] elapsed=896s new_judged=5656
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [520/1035] elapsed=928s new_judged=5854
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [540/1035] elapsed=960s new_judged=6065
+  [560/1035] elapsed=992s new_judged=6278
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [580/1035] elapsed=1027s new_judged=6487
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [600/1035] elapsed=1063s new_judged=6709
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [620/1035] elapsed=1098s new_judged=6918
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [640/1035] elapsed=1128s new_judged=7104
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [660/1035] elapsed=1177s new_judged=7371
+  [680/1035] elapsed=1216s new_judged=7638
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [700/1035] elapsed=1254s new_judged=7884
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [720/1035] elapsed=1294s new_judged=8125
+  [740/1035] elapsed=1327s new_judged=8356
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [760/1035] elapsed=1376s new_judged=8639
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [780/1035] elapsed=1427s new_judged=8947
+  [800/1035] elapsed=1472s new_judged=9253
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [820/1035] elapsed=1524s new_judged=9561
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [840/1035] elapsed=1556s new_judged=9749
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [860/1035] elapsed=1580s new_judged=9900
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [880/1035] elapsed=1638s new_judged=10152
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+    judge FAILED: 'NoneType' object has no attribute 'strip'
+  [900/1035] elapsed=1684s new_judged=10340
+  [920/1035] elapsed=1714s new_judged=10545
+  [940/1035] elapsed=1735s new_judged=10686
+  [960/1035] elapsed=1763s new_judged=10877
+  [980/1035] elapsed=1793s new_judged=11081
+  [1000/1035] elapsed=1823s new_judged=11275
+  [1020/1035] elapsed=1858s new_judged=11513
+  [1035/1035] elapsed=1887s new_judged=11696
+
+new rows judged: 11696  |  missing-from-corpus candidates skipped: 0
+wrote /work/evaluate/final_evaluation_dataset_pooled.jsonl
+=== POOLING DONE, RUNNING COMPARISON ===
+Loading vector DB + documents...
+Current Space: 336
+Current Space2: cosine
+Data from /work/data.jsonl successfully embedded and stored in /work/chromaDB
+Loading BM25 index...
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+[nltk_data] Downloading package punkt_tab to /root/nltk_data...
+[nltk_data]   Package punkt_tab is already up-to-date!
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+Loading reranker (this can be a large download / slow on CPU)...
+MiniLM Device: cuda:0
+
+Running method: vector  (1035 queries)
+  50/1035
+  100/1035
+  150/1035
+  200/1035
+  250/1035
+  300/1035
+  350/1035
+  400/1035
+  450/1035
+  500/1035
+  550/1035
+  600/1035
+  650/1035
+  700/1035
+  750/1035
+  800/1035
+  850/1035
+  900/1035
+  950/1035
+  1000/1035
+  wrote /work/evaluate/run_results_pooled/vector_results.jsonl
+
+Running method: rerank  (1035 queries)
+  50/1035
+  100/1035
+  150/1035
+  200/1035
+  250/1035
+  300/1035
+  350/1035
+  400/1035
+  450/1035
+  500/1035
+  550/1035
+  600/1035
+  650/1035
+  700/1035
+  750/1035
+  800/1035
+  850/1035
+  900/1035
+  950/1035
+  1000/1035
+  wrote /work/evaluate/run_results_pooled/rerank_results.jsonl
+
+==============================================================================
+Retrieval comparison  |  K=10  |  rel_threshold>=1  |  candidate_pool=100  |  queries=1035
+==============================================================================
+Method                     NDCG@K (mn/med)        MRR (mn/med)        P@K (mn/med)        R@K (mn/med)
+------------------------------------------------------------------------------------------------------
+Vector (MPNet)           0.5665/0.6096      0.8739/1.0000      0.4917/0.5000      0.4618/0.4545   
+Vector+Jina rerank       0.5185/0.5466      0.8678/1.0000      0.3962/0.4000      0.3670/0.3571   
+==============================================================================

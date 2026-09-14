@@ -145,13 +145,22 @@ def embed_docs(model, doc_ids, doc_texts, doc_tokens, cache_path, mps_token_limi
             print(f"  embedded {n}/{len(short)} short docs ({time.time()-t0:.0f}s)")
 
     if long_:
-        print(f"  {len(long_)} docs > {mps_token_limit} tokens -> embedding on CPU")
-        device = model.device
-        model.to("cpu")
-        for n, i in enumerate(long_, start=1):
-            embs[i] = model.encode([doc_texts[i]], normalize_embeddings=True)[0]
-            print(f"  long doc {n}/{len(long_)} ({time.time()-t0:.0f}s)")
-        model.to(device)
+        if str(model.device).startswith("mps"):
+            print(f"  {len(long_)} docs > {mps_token_limit} tokens -> embedding on CPU (MPS OOM workaround)")
+            device = model.device
+            model.to("cpu")
+            for n, i in enumerate(long_, start=1):
+                embs[i] = model.encode([doc_texts[i]], normalize_embeddings=True)[0]
+                print(f"  long doc {n}/{len(long_)} ({time.time()-t0:.0f}s)")
+            model.to(device)
+        else:
+            # The MPS shared-pool OOM this split avoids doesn't apply on CUDA/CPU;
+            # embedding these on-device (GPU on Anvil) is both correct and far faster.
+            print(f"  {len(long_)} docs > {mps_token_limit} tokens -> embedding on {model.device} (no MPS workaround needed)")
+            for n, i in enumerate(long_, start=1):
+                embs[i] = model.encode([doc_texts[i]], normalize_embeddings=True)[0]
+                if n % 10 == 0 or n == len(long_):
+                    print(f"  long doc {n}/{len(long_)} ({time.time()-t0:.0f}s)")
 
     emb = np.array(embs, dtype=np.float32)
     np.savez(cache_path, ids=np.array(doc_ids), emb=emb)
@@ -228,7 +237,7 @@ def main():
 
     # ---- 3. gte bi-encoder -----------------------------------------------------
     import torch
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
     from sentence_transformers import SentenceTransformer
     print(f"Loading {GTE_MODEL} on {device} ...")
     gte = SentenceTransformer(GTE_MODEL, trust_remote_code=True, device=device)
@@ -266,7 +275,8 @@ def main():
             from transformers import AutoModel
             print(f"Loading {JINA_MODEL} ...")
             jina = AutoModel.from_pretrained(JINA_MODEL, dtype="auto", trust_remote_code=True)
-            jina.eval()
+            jina.eval().to(device)
+            print(f"jina reranker on device: {device}")
             text_by_id = dict(zip(doc_ids, doc_texts))
             with open(export_path, "a") as f:
                 for n, q in enumerate(todo, start=1):

@@ -1,0 +1,92 @@
+{
+  "RRF|current": {
+    "mean_bAcc": 0.8613708730532826,
+    "median_bAcc": 0.8923076923076922,
+    "mean_MCC": 0.6787329430327029,
+    "median_MCC": 0.6908492797077574,
+    "FP": 114,
+    "TP": 207,
+    "FN": 38,
+    "TN": 1011
+  },
+  "RRF|flat": {
+    "mean_bAcc": 0.8534723111995691,
+    "median_bAcc": 0.9038461538461539,
+    "mean_MCC": 0.6639513021884292,
+    "median_MCC": 0.6908492797077574,
+    "FP": 112,
+    "TP": 199,
+    "FN": 46,
+    "TN": 1020
+  },
+  "RRF|labeled": {
+    "mean_bAcc": 0.8437668997263952,
+    "median_bAcc": 0.8814102564102564,
+    "mean_MCC": 0.6444010513697809,
+    "median_MCC": 0.6984302957695782,
+    "FP": 123,
+    "TP": 199,
+    "FN": 46,
+    "TN": 1011
+  },
+  "CrossEncoder_base|current": {
+    "mean_bAcc": 0.709479495593607,
+    "median_bAcc": 0.625,
+    "mean_MCC": 0.4673375658907866,
+    "median_MCC": 0.42640143271122083,
+    "FP": 15,
+    "TP": 95,
+    "FN": 150,
+    "TN": 1110
+  },
+  "CrossEncoder_base|flat": {
+    "mean_bAcc": 0.7101593752377725,
+    "median_bAcc": 0.625,
+    "mean_MCC": 0.4708869336615761,
+    "median_MCC": 0.4406878648270159,
+    "FP": 15,
+    "TP": 96,
+    "FN": 149,
+    "TN": 1117
+  },
+  "CrossEncoder_base|labeled": {
+    "mean_bAcc": 0.6958501566785539,
+    "median_bAcc": 0.625,
+    "mean_MCC": 0.44120868421187853,
+    "median_MCC": 0.42687494916218993,
+    "FP": 11,
+    "TP": 91,
+    "FN": 154,
+    "TN": 1123
+  },
+  "CrossEncoder_advance|current": {
+    "mean_bAcc": 0.7107985206794041,
+    "median_bAcc": 0.7195121951219512,
+    "mean_MCC": 0.2713294911803314,
+    "median_MCC": 0.2752982771724905,
+    "FP": 446,
+    "TP": 184,
+    "FN": 61,
+    "TN": 679
+  },
+  "CrossEncoder_advance|flat": {
+    "mean_bAcc": 0.7142238454616882,
+    "median_bAcc": 0.725,
+    "mean_MCC": 0.27424476841648115,
+    "median_MCC": 0.2672612419124244,
+    "FP": 492,
+    "TP": 187,
+    "FN": 58,
+    "TN": 640
+  },
+  "CrossEncoder_advance|labeled": {
+    "mean_bAcc": 0.7329650293914829,
+    "median_bAcc": 0.7692307692307692,
+    "mean_MCC": 0.3110818719596819,
+    "median_MCC": 0.3176117015830118,
+    "FP": 387,
+    "TP": 175,
+    "FN": 70,
+    "TN": 747
+  }
+}
