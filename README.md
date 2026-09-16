@@ -64,6 +64,9 @@ evaluate/                         evaluation harnesses (see Experiments below)
 evaluate/k8s/                     one Kubernetes Job manifest per experiment
 evaluate/k8s/run_logs_2026-09-09/ captured stdout of the full reproduction run
 docs_archive/                     superseded .docx write-ups, kept for provenance
+courses_md/                       full module markdown, 346 files (Exp 2)
+summaries/                        module summaries, 346 files (Exp 3)
+curated_summaries_35q/            curated summaries, 239 files (Exps 4-6)
 data.jsonl                        course descriptions from the CyberFaCES database
 course_unit_map.jsonl             unit-to-course mapping
 flatten_ab_eval.py, ndcg_eval.py  top-level evaluation harnesses
@@ -175,9 +178,9 @@ budget, so production is never at risk.
 
 ### Prerequisites
 
-- **The three course-content corpora, which are gitignored and must exist
-  locally.** Course content is deliberately kept out of version control, so a
-  fresh clone will not have them and five experiments cannot run:
+- **Nothing to fetch — the course content ships with the repository.** All three
+  corpora the experiments read are tracked, so a fresh clone can run every
+  experiment with no extra setup:
 
   | Directory | Files | Needed by |
   |---|---|---|
@@ -185,10 +188,22 @@ budget, so production is never at risk.
   | `summaries/` | 346 | Exp 3 (`unit_N__slug.md`) |
   | `curated_summaries_35q/` | 239 | Exps 4, 5, 6 (`NNN-slug.md`) |
 
-  Regenerate with `extract_courses_full.py`, `make_module_summaries.py` and
-  `generate_descriptions.py`, or copy them from a machine that has them. Note
-  that `summaries/` and `curated_summaries_35q/` are *different* corpora with no
-  overlapping files — see D2 in [Known defects](#known-defects).
+  Verify after cloning:
+
+  ```sh
+  ls courses_md/*.md       | wc -l   # 346
+  ls summaries             | wc -l   # 346
+  ls curated_summaries_35q | wc -l   # 239
+  ```
+
+  Note that `summaries/` and `curated_summaries_35q/` are *different* corpora
+  with different naming schemes and no overlapping files — see D2 in
+  [Known defects](#known-defects).
+
+  Two things are deliberately **not** tracked: `courses/` (2.1 GB of raw source
+  attachments — `courses_md/` is generated from it by
+  `extract_courses_full.py`), and `courses_md/.cache/` (regenerable OCR and
+  network cache). Neither is needed to run anything.
 - A kubeconfig with an `anvil` context pointing at `cyberfaces-dev`
   (`kubectl --context=anvil …` throughout).
 - Secret `cyberfaces-rag-secrets` providing `ANVILGPT_API`.

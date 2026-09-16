@@ -1,0 +1,34 @@
+---
+title: "Tutorials"
+unit_id: 81
+course_id: 3
+level: "Foundation"
+slug: tutorials
+is_course: 0
+---
+
+# Tutorials
+
+Unit 81 provides a curated collection of five complementary online tutorials for learning Unix/Linux fundamentals, each covering overlapping core concepts at varying depths and formats. The module recommends completing tutorials until comfortable with Unix/Linux system navigation and usage.
+
+**Linux Tutorial (ryanstutorials.net/linuxtutorial/)** — Ryan's comprehensive beginner's guide structured as 13 sequential sections with activities and cheat sheets. Sections cover: The Command Line, Basic Navigation, More About Files, Manual Pages, File Manipulation, VI Text Editor, Wildcards, Permissions, Filters, Grep and Regular Expressions, Piping and Redirection, Process Management, and Bash Scripting. Includes bonus material on Cheat Sheet, Grep Cheat Sheet, and Vi Cheat Sheet. Emphasizes learning through exploration, problem-solving, and creative thinking with hands-on practice at the command line. Discusses obtaining Linux access via Mac Terminal, Ubuntu, OpenSuSe, VirtualBox virtual machines, or remote SSH access. Covers Unix building-block philosophy, GUI vs. command-line trade-offs, and distinguishes between Unix and Linux terminology.
+
+**Linux Tutorial for Beginners (YouTube — V1y-mbWM3B8)** — An 18-part video series introducing Linux concepts, operating system fundamentals (kernel role in hardware-software communication), Linux history (Linus Torvalds at University of Helsinki, 1991 development), and benefits over Windows/macOS. Includes YouTube transcript content covering OS architecture and Linux adoption.
+
+**The Unix Shell (swcarpentry.github.io/shell-novice/)** — Software Carpentry's foundational lesson on shell basics for users with file/directory storage knowledge. Covers file system fundamentals, shell command automation, and workflow composition for advanced computing and high-performance computing (HPC). Provides downloadable shell-lesson-data.zip file. Details shell access across operating systems: Windows (Git Bash emulator, Windows Subsystem for Linux/WSL), macOS (Terminal via Finder or Spotlight, with Bash/Zsh shell selection, echo $SHELL command to check), and Linux (Gnome Terminal, KDE Konsole, xterm via applications menu).
+
+**Unix 101 (rcac.purdue.edu/training/unix101)** — RCAC Purdue workshop designed for students, staff, and faculty on Linux/Unix-based HPC systems. First workshop in a four-part series with no prerequisites. Topics include: Overview, Files and directories, Permissions, File Editing, Helpful Commands. Provides lecture video and downloadable slides PDF. Addresses logging into Unix systems and file manipulation with shells.
+
+**Unix Computer Operating System (tutorialspoint.com/unix/unix_tutorial.pdf)** — Comprehensive TutorialsPoint Unix tutorial PDF. "Unix for Beginners" section covers: Getting Started (Unix definition, AT&T Bell Labs 1969 origin by Ken Thompson and Dennis Ritchie, Unix Architecture), File Management (listing files with metacharacters and hidden files, creating/editing/displaying/counting/copying/renaming/deleting files, Standard Unix Streams), Directory Management (home directory, absolute/relative pathnames, listing/creating/removing directories, directory traversal with dot/dot-dot notation), File Permission/Access Modes (permission indicators, file/directory access modes, chmod absolute permissions, ownership/group changes, SUID/SGID), Environment (profile file, terminal type, PATH, PS1/PS2 variables, environment variables), Basic Utilities (printing files, email), Pipes and Filters (grep command, sort command, pg and more commands), Processes Management (starting/background processes, listing running processes, stopping processes, parent/child/zombie/orphan/daemon processes, top command, job ID vs. process ID), Network Communication Utilities (ping utility, ftp utility with commands: put, get, mput, mget, prompt on/off, dir, cd, lcd, quit; telnet utility for remote login; finger utility for user information), VI Editor (operation modes, navigation, control/edit/delete/change/copy-paste/advanced commands, searching, set commands, text replacement). "Unix Shell Programming" section covers: Shell basics (shell prompt, shell types, shell scripts, comments), Variables (naming, defining, accessing, read-only, unsetting, variable types), Special Variables (command-line arguments, special parameters $* and $@, exit status), Arrays (defining/accessing values), Shell Basic Operators (arithmetic, relational, boolean, string, file test operators for bash/C shell/Korn shell with examples), Shell Decision Making (if...else...fi, if...elif...fi, case...esac statements), Shell Loop Types (while, for, until, select loops, loop nesting), Loop Control (infinite loops, break, continue statements), Shell Substitution (command substitution, variable substitution), Functions, Input/Output Redirection, Here Document, Metacharacters, and additional topics. Includes CodingGround online execution platform, copyright 2016 by Tutorials Point (I) Pvt. Ltd.
+
+## Summarized attachments
+
+- **Linux Tutorial** (https://ryanstutorials.net/linuxtutorial/, remote resource): A 13-section beginner's guide to Linux command line (BASH) covering The Command Line, Basic Navigation, File Manipulation, VI Text Editor, Permissions, Filters, Grep and Regular Expressions, Piping and Redirection, Process Management, and Bash Scripting, with bonus cheat sheets and emphasis on hands-on practice and problem-solving.
+
+- **Linux Tutorial for Beginners** (https://youtu.be/V1y-mbWM3B8, remote resource): An 18-part YouTube video series introducing Linux fundamentals including operating system concepts, kernel architecture, Linux history (Linus Torvalds 1991 development), and benefits over Windows and macOS.
+
+- **The Unix Shell** (https://swcarpentry.github.io/shell-novice/, remote resource): A Software Carpentry foundational lesson on shell basics covering file system fundamentals, shell command automation, workflow composition for advanced computing and high-performance computing (HPC), with a downloadable shell-lesson-data.zip file and cross-platform shell access instructions.
+
+- **Unix 101** (https://www.rcac.purdue.edu/training/unix101, remote resource): An RCAC Purdue workshop for students, staff, and faculty on Linux/Unix HPC systems covering logging in, file manipulation, permissions, file editing, and helpful commands, with lecture video and downloadable slides PDF.
+
+- **Unix Computer Operating System** (https://www.tutorialspoint.com/unix/unix_tutorial.pdf, remote resource): A comprehensive TutorialsPoint PDF tutorial covering Unix basics, file and directory management, permissions, network utilities, VI editor, and shell programming including variables, operators, decision-making, loops, and functions.
