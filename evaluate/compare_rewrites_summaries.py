@@ -105,7 +105,10 @@ def main():
     # ---------------- gte ----------------
     import torch
     from sentence_transformers import SentenceTransformer
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    # Select CUDA when available. Previously this only checked MPS, so on a GPU node
+    # gte-large embedded on CPU -- the run took 6h04m instead of minutes. Same fix as
+    # compare_gte_vs_jina.py.
+    device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Loading {GTE_MODEL} on {device} ...")
     gte = SentenceTransformer(GTE_MODEL, trust_remote_code=True, device=device)
     gte.max_seq_length = 8192
